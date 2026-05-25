@@ -1,0 +1,105 @@
+{
+  "name": "Team",
+  "type": "object",
+  "properties": {
+    "clubId": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "crest": {
+      "type": "string"
+    },
+    "sport": {
+      "type": "string",
+      "enum": [
+        "gaelic_football",
+        "hurling",
+        "camogie",
+        "ladies_football",
+        "soccer",
+        "rugby"
+      ]
+    },
+    "grade": {
+      "type": "string"
+    },
+    "ageGroup": {
+      "type": "string",
+      "enum": [
+        "senior",
+        "u21",
+        "u20",
+        "u18",
+        "u16",
+        "u14",
+        "u12",
+        "u10",
+        "juvenile"
+      ]
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "mens",
+        "womens",
+        "mixed"
+      ]
+    },
+    "county": {
+      "type": "string"
+    },
+    "province": {
+      "type": "string"
+    },
+    "homeGround": {
+      "type": "string"
+    },
+    "primaryColour": {
+      "type": "string"
+    },
+    "secondaryColour": {
+      "type": "string"
+    },
+    "managerName": {
+      "type": "string"
+    },
+    "coachName": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "facebookUrl": {
+      "type": "string"
+    },
+    "twitterUrl": {
+      "type": "string"
+    },
+    "isHomeClub": {
+      "type": "boolean"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "isVerified": {
+      "type": "boolean"
+    },
+    "matchCount": {
+      "type": "number"
+    },
+    "wins": {
+      "type": "number"
+    },
+    "losses": {
+      "type": "number"
+    },
+    "draws": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

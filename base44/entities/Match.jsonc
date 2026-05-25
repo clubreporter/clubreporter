@@ -1,0 +1,157 @@
+{
+  "name": "Match",
+  "type": "object",
+  "properties": {
+    "sport": {
+      "type": "string",
+      "enum": [
+        "gaelic_football",
+        "hurling",
+        "camogie",
+        "ladies_football"
+      ]
+    },
+    "homeTeamName": {
+      "type": "string"
+    },
+    "awayTeamName": {
+      "type": "string"
+    },
+    "homeTeamCrest": {
+      "type": "string"
+    },
+    "awayTeamCrest": {
+      "type": "string"
+    },
+    "competition": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "matchDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "venue": {
+      "type": "string"
+    },
+    "referee": {
+      "type": "string"
+    },
+    "weather": {
+      "type": "string"
+    },
+    "attendance": {
+      "type": "string"
+    },
+    "sponsorName": {
+      "type": "string"
+    },
+    "sponsorLogo": {
+      "type": "string"
+    },
+    "sponsorLink": {
+      "type": "string"
+    },
+    "template": {
+      "type": "string",
+      "enum": [
+        "quick",
+        "full",
+        "report_only"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "scheduled",
+        "live",
+        "half_time",
+        "full_time",
+        "extra_time",
+        "penalties",
+        "postponed",
+        "abandoned"
+      ]
+    },
+    "homeGoals": {
+      "type": "number"
+    },
+    "homePoints": {
+      "type": "number"
+    },
+    "awayGoals": {
+      "type": "number"
+    },
+    "awayPoints": {
+      "type": "number"
+    },
+    "halfTimeHome": {
+      "type": "string"
+    },
+    "halfTimeAway": {
+      "type": "string"
+    },
+    "halfTimeNote": {
+      "type": "string"
+    },
+    "currentMinute": {
+      "type": "string"
+    },
+    "reportDraft": {
+      "type": "string"
+    },
+    "reportPublished": {
+      "type": "boolean"
+    },
+    "playerOfMatch": {
+      "type": "string"
+    },
+    "refereeNotes": {
+      "type": "string"
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "publicId": {
+      "type": "string"
+    },
+    "lastIncidentId": {
+      "type": "string"
+    },
+    "homeLineup": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "homeSubs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "awayLineup": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "awaySubs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "sport",
+    "homeTeamName",
+    "awayTeamName",
+    "status"
+  ]
+}

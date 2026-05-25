@@ -1,0 +1,54 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ]
+    },
+    "profileType": {
+      "type": "string",
+      "enum": [
+        "club",
+        "media"
+      ],
+      "description": "Whether the user is a club reporter or a media reporter"
+    },
+    "mediaOutletName": {
+      "type": "string",
+      "description": "Name of media outlet (for media profile type)"
+    },
+    "mediaVerificationInfo": {
+      "type": "string",
+      "description": "Social link or media email provided during media verification"
+    },
+    "mediaVerified": {
+      "type": "boolean",
+      "description": "Whether the media profile has been verified by admin"
+    },
+    "stripeCustomerId": {
+      "type": "string"
+    },
+    "subscriptionPlan": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "premium",
+        "media"
+      ]
+    },
+    "subscriptionStatus": {
+      "type": "string",
+      "enum": [
+        "active",
+        "past_due",
+        "canceled",
+        "trialing",
+        "incomplete"
+      ]
+    }
+  }
+}

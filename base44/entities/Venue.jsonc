@@ -1,0 +1,66 @@
+{
+  "name": "Venue",
+  "type": "object",
+  "properties": {
+    "clubId": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "nickname": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "county": {
+      "type": "string"
+    },
+    "province": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "capacity": {
+      "type": "number"
+    },
+    "surface": {
+      "type": "string",
+      "enum": [
+        "grass",
+        "artificial",
+        "hybrid",
+        "indoor"
+      ]
+    },
+    "photo": {
+      "type": "string"
+    },
+    "facilities": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "googleMapsLink": {
+      "type": "string"
+    },
+    "isNeutral": {
+      "type": "boolean"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "matchCount": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

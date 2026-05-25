@@ -1,0 +1,103 @@
+{
+  "name": "Player",
+  "type": "object",
+  "properties": {
+    "clubId": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "nickname": {
+      "type": "string"
+    },
+    "number": {
+      "type": "number"
+    },
+    "position": {
+      "type": "string",
+      "enum": [
+        "goalkeeper",
+        "full_back",
+        "corner_back",
+        "half_back",
+        "midfielder",
+        "half_forward",
+        "corner_forward",
+        "full_forward",
+        "centre_back",
+        "centre_forward",
+        "wing_back",
+        "wing_forward",
+        "substitute",
+        "defender",
+        "forward",
+        "striker"
+      ]
+    },
+    "sport": {
+      "type": "string",
+      "enum": [
+        "gaelic_football",
+        "hurling",
+        "camogie",
+        "ladies_football",
+        "soccer",
+        "rugby"
+      ]
+    },
+    "team": {
+      "type": "string"
+    },
+    "ageGroup": {
+      "type": "string",
+      "enum": [
+        "senior",
+        "u21",
+        "u20",
+        "u18",
+        "u16",
+        "u14",
+        "u12",
+        "u10"
+      ]
+    },
+    "dateOfBirth": {
+      "type": "string",
+      "format": "date"
+    },
+    "photo": {
+      "type": "string"
+    },
+    "isCaptain": {
+      "type": "boolean"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "totalGoals": {
+      "type": "number"
+    },
+    "totalPoints": {
+      "type": "number"
+    },
+    "yellowCards": {
+      "type": "number"
+    },
+    "redCards": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "name": "Sponsor",
+  "type": "object",
+  "properties": {
+    "clubId": {
+      "type": "string"
+    },
+    "mediaProfileId": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "logoUrl": {
+      "type": "string"
+    },
+    "logoBackgroundColour": {
+      "type": "string"
+    },
+    "websiteLink": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "main",
+        "secondary",
+        "match",
+        "jersey",
+        "programme"
+      ]
+    },
+    "startDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date"
+    },
+    "isActive": {
+      "type": "boolean"
+    },
+    "matchIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "displayOnReports": {
+      "type": "boolean"
+    },
+    "displayOnPublicPage": {
+      "type": "boolean"
+    },
+    "displayOnTimeline": {
+      "type": "boolean"
+    },
+    "contactName": {
+      "type": "string"
+    },
+    "contactEmail": {
+      "type": "string"
+    },
+    "contactPhone": {
+      "type": "string"
+    },
+    "impressionCount": {
+      "type": "number"
+    },
+    "clickCount": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

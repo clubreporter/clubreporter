@@ -1,0 +1,113 @@
+{
+  "name": "Club",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "string"
+    },
+    "county": {
+      "type": "string"
+    },
+    "province": {
+      "type": "string"
+    },
+    "sports": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "primaryColour": {
+      "type": "string"
+    },
+    "secondaryColour": {
+      "type": "string"
+    },
+    "accentColour": {
+      "type": "string"
+    },
+    "grades": {
+      "type": "object"
+    },
+    "founded": {
+      "type": "string"
+    },
+    "ground": {
+      "type": "string"
+    },
+    "groundAddress": {
+      "type": "string"
+    },
+    "groundCapacity": {
+      "type": "number"
+    },
+    "website": {
+      "type": "string"
+    },
+    "facebookUrl": {
+      "type": "string"
+    },
+    "twitterUrl": {
+      "type": "string"
+    },
+    "instagramUrl": {
+      "type": "string"
+    },
+    "youtubeUrl": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "contactEmail": {
+      "type": "string"
+    },
+    "contactPhone": {
+      "type": "string"
+    },
+    "adminUserIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sponsorName": {
+      "type": "string"
+    },
+    "sponsorLogo": {
+      "type": "string"
+    },
+    "sponsorLink": {
+      "type": "string"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "premium"
+      ]
+    },
+    "tierExpiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "stripeCustomerId": {
+      "type": "string"
+    },
+    "stripeSubscriptionId": {
+      "type": "string"
+    },
+    "verified": {
+      "type": "boolean"
+    },
+    "isPublic": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

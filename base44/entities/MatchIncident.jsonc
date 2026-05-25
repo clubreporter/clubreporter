@@ -1,0 +1,81 @@
+{
+  "name": "MatchIncident",
+  "type": "object",
+  "properties": {
+    "matchId": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "goal",
+        "point",
+        "missed_penalty",
+        "penalty_goal",
+        "yellow_card",
+        "red_card",
+        "black_card",
+        "substitution",
+        "injury",
+        "wide",
+        "free",
+        "sideline",
+        "save",
+        "half_time",
+        "full_time",
+        "extra_time_start",
+        "water_break",
+        "photo",
+        "note"
+      ]
+    },
+    "minute": {
+      "type": "string"
+    },
+    "team": {
+      "type": "string",
+      "enum": [
+        "home",
+        "away"
+      ]
+    },
+    "player": {
+      "type": "string"
+    },
+    "playerOff": {
+      "type": "string"
+    },
+    "secondPlayer": {
+      "type": "string"
+    },
+    "details": {
+      "type": "string"
+    },
+    "photoUrl": {
+      "type": "string"
+    },
+    "scoreSnapshot": {
+      "type": "string"
+    },
+    "isKeyMoment": {
+      "type": "boolean"
+    },
+    "notificationSent": {
+      "type": "boolean"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "club",
+        "media",
+        "auto"
+      ]
+    }
+  },
+  "required": [
+    "matchId",
+    "type",
+    "minute",
+    "team"
+  ]
+}
