@@ -70,7 +70,7 @@ export default function PhotoModal({ match, onPhotoAdded, onClose, isPremium }) 
                 value={caption}
                 onChange={e => setCaption(e.target.value)}
                 placeholder="Add a caption (optional)"
-                className="w-full border border-input rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                className="w-full border border-[#d1d5db] bg-white rounded-xl px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-ring"
               />
             )}
           </>

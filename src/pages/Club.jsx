@@ -313,7 +313,7 @@ export default function Club() {
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">About the Club</label>
               <textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder="Short club bio for match reports…" rows={3}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-base shadow-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" />
+                className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-base text-gray-900 shadow-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" />
             </div>
           </div>
 

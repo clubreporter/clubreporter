@@ -249,7 +249,7 @@ export default function LiveMatch() {
           value={minute}
           onChange={e => setMinute(e.target.value)}
           placeholder="Minute override (e.g. 27)"
-          className="flex-1 text-center font-mono h-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus-visible:ring-[#1A9E6D]"
+          className="flex-1 text-center font-mono h-10 bg-white border-gray-200 text-gray-900 placeholder:text-gray-400 focus-visible:ring-[#1A9E6D]"
         />
         {confirmUndo ? (
           <div className="flex items-center gap-1.5 shrink-0">

@@ -55,6 +55,20 @@ export async function signIn(email, password) {
   return data;
 }
 
+/** Sends a password reset email; link opens /reset-password */
+export async function resetPasswordForEmail(email) {
+  const redirectTo = `${window.location.origin}/reset-password`;
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+  if (error) throw error;
+}
+
+/** Set a new password (user must have arrived via recovery link) */
+export async function updatePassword(password) {
+  const { data, error } = await supabase.auth.updateUser({ password });
+  if (error) throw error;
+  return data;
+}
+
 /** Redirects to Google; session is restored on return via detectSessionInUrl */
 export async function signInWithGoogle(redirectPath = '/dashboard') {
   const redirectTo = `${window.location.origin}${redirectPath}`;

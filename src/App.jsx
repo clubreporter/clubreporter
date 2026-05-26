@@ -21,6 +21,8 @@ import Billing from './pages/Billing';
 import { loadAndApplyStoredColours } from './lib/clubColours';
 import Landing from './pages/Landing';
 import Auth from './pages/Auth';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 loadAndApplyStoredColours();
 
@@ -61,11 +63,9 @@ const AppRoutes = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const apply = (e) => document.documentElement.classList.toggle('dark', e.matches);
-    apply(mq);
-    mq.addEventListener('change', apply);
-    return () => mq.removeEventListener('change', apply);
+    // App UI is light-mode; avoid forcing dark theme from OS preference (breaks form inputs).
+    document.documentElement.classList.remove('dark');
+    document.documentElement.style.colorScheme = 'light';
   }, []);
 
   return (
@@ -75,13 +75,18 @@ const AppRoutes = () => {
 
           {/* Public */}
           <Route path="/" element={<Landing />} />
+          <Route path="/pricing" element={<Landing />} />
           <Route path="/m/:publicId" element={<PublicMatch />} />
 
           {/* Auth pages — redirect to dashboard if already signed in */}
           <Route element={<GuestOnly />}>
             <Route path="/login" element={<Auth />} />
             <Route path="/signup" element={<Auth />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>
+
+          {/* Password reset — must stay public (recovery session counts as signed in) */}
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected app */}
           <Route element={<ProtectedLayout />}>

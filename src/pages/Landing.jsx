@@ -1,120 +1,207 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Check, Star, Facebook, Twitter, Instagram } from 'lucide-react';
 
-const SPORTS = [
-  { name: 'Gaelic Football', emoji: '⚽' },
-  { name: 'Hurling', emoji: '🏑' },
-  { name: 'Camogie', emoji: '🥍' },
-  { name: 'Ladies Football', emoji: '👟' },
-];
-
-const COMING_SOON_SPORTS = [
-  { name: 'Soccer', emoji: '⚽' },
-  { name: 'Tennis', emoji: '🎾' },
-  { name: 'Rally', emoji: '🚗' },
-];
+const GREEN = '#1a6b3c';
+const HEADING = '#111827';
+const BODY = '#6b7280';
+const SECTION_BG = '#f8faf8';
 
 const FEATURES = [
-  { icon: '📡', title: 'Live Score Updates', desc: 'Update scores, cards and subs in real time from your phone. Fans follow along as it happens.' },
-  { icon: '📋', title: 'Match Timeline', desc: 'Every goal, point, card and sub is logged with the minute. A full game log at your fingertips.' },
-  { icon: '📝', title: 'Automatic Match Reports', desc: 'AI-powered match reports generated from your live updates. Ready to copy, share or publish.' },
-  { icon: '🤝', title: 'Sponsor Branding', desc: 'Promote local sponsors on every match page and report. Give them real visibility with every update.' },
-  { icon: '📶', title: 'Works on Poor Signal', desc: 'Built for rural pitches. Enter updates offline and they sync when you get signal.' },
-  { icon: '🔗', title: 'Public Sharing Links', desc: 'Each match gets a public link. Share on WhatsApp, Facebook or Twitter with one tap.' },
+  { emoji: '⏱️', title: 'Live Timeline', desc: 'Record every goal, point, card and incident as it happens.' },
+  { emoji: '📰', title: 'AI Match Reports', desc: 'Generate newspaper style reports in seconds.' },
+  { emoji: '📸', title: 'Photo Uploads', desc: 'Link photos directly to match moments.' },
+  { emoji: '🤝', title: 'Sponsor Integration', desc: 'Add a sponsor to every published report.' },
+  { emoji: '🔗', title: 'Public Share Links', desc: 'Every report gets a unique shareable URL.' },
+  { emoji: '🔔', title: 'Push Notifications', desc: 'Alert followers of live match events.' },
+];
+
+const TESTIMONIALS = [
+  {
+    quote: 'We used to spend hours writing match reports after the game. ClubReporter does it in minutes.',
+    name: 'John Murphy',
+    role: 'Barryroe GAA PRO',
+  },
+  {
+    quote: 'The sponsor feature alone pays for the subscription. Our main sponsor loves seeing their logo on every report.',
+    name: "Mary O'Sullivan",
+    role: 'Castlehaven GAA',
+  },
+  {
+    quote: 'As a local sports journalist covering 5 clubs every weekend this app has changed everything.',
+    name: 'Pat Collins',
+    role: 'Southern Star',
+  },
+];
+
+const PLANS = [
+  {
+    id: 'free',
+    name: 'Free',
+    price: '€0',
+    period: 'forever',
+    highlight: false,
+    features: [
+      '4 matches per month',
+      'Manual entry',
+      'Basic report',
+      'Public link',
+      'No credit card',
+    ],
+    cta: 'Sign Up Free',
+  },
+  {
+    id: 'club',
+    name: 'Club',
+    price: '€4.99',
+    period: 'per month',
+    highlight: true,
+    badge: 'Most Popular',
+    features: [
+      'Unlimited matches',
+      'Photos',
+      'Sponsor integration',
+      'Saved roster',
+      'Push notifications',
+    ],
+    cta: 'Get Started',
+  },
+  {
+    id: 'county',
+    name: 'County',
+    price: '€12.99',
+    period: 'per month',
+    highlight: false,
+    features: [
+      'Everything in Club',
+      'AI reports',
+      'Analytics',
+      'Multiple admins',
+      'Social media push',
+    ],
+    cta: 'Get Started',
+  },
+  {
+    id: 'presspass',
+    name: 'Press Pass',
+    price: '€34.99',
+    period: 'per month',
+    highlight: false,
+    features: [
+      'Everything in County',
+      'Media profile',
+      'Unlimited clubs',
+      'Verified press badge',
+    ],
+    cta: 'Get Started',
+  },
 ];
 
 const STEPS = [
-  { num: '01', title: 'Create a Match', desc: 'Set up the fixture — teams, competition, venue and lineup — in under 2 minutes.' },
-  { num: '02', title: 'Update It Live', desc: 'Log goals, cards, subs and match events from the sideline as they happen.' },
-  { num: '03', title: 'Publish & Share', desc: 'Generate a report, add photos, and share the public match link with your club community.' },
+  {
+    num: '1',
+    title: 'Create your match',
+    desc: 'Enter teams, venue, competition and date.',
+  },
+  {
+    num: '2',
+    title: 'Record live events',
+    desc: 'Tap to add goals, points, cards and incidents as they happen.',
+  },
+  {
+    num: '3',
+    title: 'Publish your report',
+    desc: 'Generate and share your report in one tap.',
+  },
 ];
 
-const FAQS = [
-  { q: 'Do fans need an account?', a: 'No. Fans follow via a public link — no login, no app install needed. Anyone with the link can view the live match.' },
-  { q: 'Does it work on mobile?', a: 'Yes, ClubReporter is designed mobile-first. It works great on any smartphone or tablet, straight from the browser.' },
-  { q: 'What happens if signal is poor?', a: 'You can still enter updates on the pitch. They sync automatically once your connection improves. No data is lost.' },
-  { q: 'Can I upload players by CSV?', a: 'Yes. Upload a CSV file with player names, numbers and positions and they\'re immediately available for lineup selection.' },
-  { q: 'Which sports are supported?', a: 'Gaelic Football, Hurling, Camogie, Ladies Football, and Soccer. GAA scoring (goals + points) is handled automatically.' },
-];
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-40px' },
+  transition: { duration: 0.45, ease: 'easeOut' },
+};
 
-function DemoMatch() {
+function Logo({ className = '' }) {
   return (
-    <div className="bg-white rounded-2xl border-2 border-green-100 shadow-lg overflow-hidden max-w-sm mx-auto">
-      {/* Header */}
-      <div className="bg-green-700 text-white px-4 py-3 flex items-center justify-between">
-        <span className="text-xs font-bold uppercase tracking-widest">🔴 Live · 54'</span>
-        <span className="text-xs opacity-80">County Senior Football Championship</span>
+    <Link to="/" className={`flex items-center gap-2.5 group ${className}`}>
+      <div
+        className="w-9 h-9 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform"
+        style={{ backgroundColor: GREEN }}
+      >
+        <span className="font-black text-white text-sm">CR</span>
       </div>
-      {/* Score */}
-      <div className="px-4 py-5 flex items-center justify-between">
-        <div className="text-center flex-1">
-          <p className="font-bold text-base leading-tight">Barryroe</p>
-          <p className="text-3xl font-black text-green-700 mt-1">1-09</p>
-        </div>
-        <div className="text-muted-foreground text-sm font-bold px-3">v</div>
-        <div className="text-center flex-1">
-          <p className="font-bold text-base leading-tight">Kilbrittain</p>
-          <p className="text-3xl font-black text-gray-500 mt-1">0-07</p>
-        </div>
+      <div className="leading-tight">
+        <span className="font-black text-lg tracking-tight" style={{ color: HEADING }}>
+          ClubReporter<span style={{ color: GREEN }}>.ie</span>
+        </span>
       </div>
-      {/* HT score */}
-      <div className="px-4 pb-2 text-center">
-        <span className="text-xs text-muted-foreground">HT: 0-05 – 0-04</span>
-      </div>
-      {/* Sponsor */}
-      <div className="px-4 pb-3 flex items-center justify-center gap-2">
-        <div className="w-7 h-7 rounded bg-orange-100 border border-orange-200 flex items-center justify-center text-sm">🔧</div>
-        <span className="text-xs text-muted-foreground">Sponsored by <strong>O&apos;Brien&apos;s Hardware</strong></span>
-      </div>
-      {/* Timeline */}
-      <div className="border-t border-gray-100 divide-y divide-gray-50">
-        {/* Photo entry */}
-        <div className="px-4 py-2.5">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-xs font-mono text-muted-foreground w-8 shrink-0">54'</span>
-            <span className="text-sm">📸</span>
-            <p className="text-xs text-gray-700 leading-snug font-semibold">Photo – Goal moment</p>
-          </div>
-          <img
-            src="https://media.base44.com/images/public/6a11bfdd862d168224f11e9c/281ba408f_Sports3302383.jpg"
-            alt="Goal moment"
-            className="w-full rounded-lg object-cover max-h-36 ml-11"
-            style={{ width: 'calc(100% - 2.75rem)' }}
-          />
-        </div>
-        {[
-          { min: "54'", icon: '🟢', text: 'GOAL – Ciarán Murphy (Barryroe)' },
-          { min: "49'", icon: '🏳️', text: 'Point – Jamie Hurley (Barryroe)' },
-          { min: "43'", icon: '🟡', text: 'Yellow card – D. O\'Callaghan (Kilbrittain)' },
-        ].map((e, i) => (
-          <div key={i} className="flex items-center gap-3 px-4 py-2.5">
-            <span className="text-xs font-mono text-muted-foreground w-8 shrink-0">{e.min}</span>
-            <span className="text-sm">{e.icon}</span>
-            <p className="text-xs text-gray-700 leading-snug">{e.text}</p>
-          </div>
+    </Link>
+  );
+}
+
+function StarRating() {
+  return (
+    <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex gap-0.5">
+        {[...Array(5)].map((_, i) => (
+          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
         ))}
       </div>
+      <span className="text-sm" style={{ color: BODY }}>
+        Loved by club PROs across Ireland
+      </span>
     </div>
   );
 }
 
 export default function Landing() {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === '/pricing') {
+      const timer = setTimeout(() => {
+        document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname]);
+
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <div className="min-h-screen bg-white font-sans antialiased" style={{ color: BODY }}>
 
       {/* ── NAV ── */}
-      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src="https://media.base44.com/images/public/6a11bfdd862d168224f11e9c/4f6e840a5_3_20260524_183643_0001.png" alt="ClubReporter" className="w-8 h-8 object-contain rounded-md" />
-            <span className="font-black text-gray-900 text-lg">ClubReporter<span className="text-[#1A9E6D]">.ie</span></span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link to="/login"
-              className="text-gray-600 hover:text-gray-900 font-semibold px-4 py-2 rounded-xl text-sm transition-colors">
+      <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+          <Logo />
+          <div className="flex items-center gap-2 sm:gap-4">
+            <a
+              href="#features"
+              className="hidden sm:inline text-sm font-semibold hover:opacity-80 transition-opacity"
+              style={{ color: BODY }}
+            >
+              Features
+            </a>
+            <a
+              href="#pricing"
+              className="hidden sm:inline text-sm font-semibold hover:opacity-80 transition-opacity"
+              style={{ color: BODY }}
+            >
+              Pricing
+            </a>
+            <Link
+              to="/login"
+              className="text-sm font-semibold px-3 py-2 hover:opacity-80 transition-opacity"
+              style={{ color: HEADING }}
+            >
               Log In
             </Link>
-            <Link to="/signup"
-              className="bg-[#0B1A2E] hover:bg-[#0d2040] text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors">
+            <Link
+              to="/signup"
+              className="text-sm font-bold text-white px-4 py-2.5 rounded-xl transition-all hover:opacity-90 shadow-sm"
+              style={{ backgroundColor: GREEN }}
+            >
               Sign Up
             </Link>
           </div>
@@ -122,265 +209,368 @@ export default function Landing() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="bg-gradient-to-b from-[#e8f2f0] to-white px-4 pt-14 pb-16 text-center">
-        <div className="max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-[#e8f5f0] text-[#0B1A2E] rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest mb-6">
-            🏆 For GAA &amp; Local Sports Clubs
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-gray-900 leading-tight mb-5">
-            Live match updates and reports for local sports clubs.
-          </h1>
-          <p className="text-lg text-gray-600 leading-relaxed mb-8">
-            Create fixtures, update scores live, upload photos, promote sponsors and generate match reports from your phone.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/signup"
-              className="bg-[#0B1A2E] hover:bg-[#0d2040] text-white font-black px-8 py-4 rounded-2xl text-lg transition-colors shadow-lg shadow-slate-300 inline-block text-center">
-              🎉 Start Free Trial — 14 Days Free
-            </Link>
-            <Link to="/login"
-              className="border-2 border-gray-300 text-gray-700 hover:border-gray-400 font-bold px-8 py-4 rounded-2xl text-lg transition-colors inline-block text-center">
-              Sign In
-            </Link>
-          </div>
-          <p className="text-xs text-gray-400 mt-4">Basic plan · No credit card required · Cancel anytime</p>
-        </div>
-      </section>
+      <section className="bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, ease: 'easeOut' }}
+            >
+              <p
+                className="text-xs font-bold uppercase tracking-[0.2em] mb-4"
+                style={{ color: GREEN }}
+              >
+                Report Every Minute
+              </p>
 
-      {/* ── PRICING (inline on landing) ── */}
-      <section className="px-4 py-14 bg-white border-b border-gray-100" id="pricing-hero">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-black text-center text-gray-900 mb-2">Simple, transparent pricing</h2>
-          <p className="text-center text-gray-500 mb-8 text-sm">All plans include a 14-day free trial on Basic. No hidden fees.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Club */}
-            <div className="border-2 border-gray-200 rounded-2xl p-5">
-              <p className="font-bold text-gray-500 text-xs uppercase tracking-wide mb-2">Club</p>
-              <p className="text-3xl font-black text-gray-900 mb-0.5">€4.99<span className="text-sm font-normal text-gray-400">/mo</span></p>
-              <p className="text-xs text-green-700 font-bold mb-4">14-day free trial</p>
-              <ul className="space-y-1.5 mb-5">
-                {['6 matches/month','Manual line-ups','Live incidents & timeline','Basic match report','Squad management'].map(f => (
-                  <li key={f} className="flex items-start gap-1.5 text-xs text-gray-700"><span className="text-green-600 mt-0.5">✓</span>{f}</li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center border-2 border-green-700 text-green-700 hover:bg-green-50 font-bold py-2.5 rounded-xl text-sm transition-colors">Start Free Trial</Link>
-            </div>
-            {/* County */}
-            <div className="border-2 border-green-700 rounded-2xl p-5 bg-green-50 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-700 text-white text-[10px] font-bold px-3 py-1 rounded-full">MOST POPULAR</div>
-              <p className="font-bold text-green-800 text-xs uppercase tracking-wide mb-2">County</p>
-              <p className="text-3xl font-black text-gray-900 mb-0.5">€12.99<span className="text-sm font-normal text-gray-400">/mo</span></p>
-              <p className="text-xs text-gray-400 mb-4">or €119.99/year</p>
-              <ul className="space-y-1.5 mb-5">
-                {['Everything in Club','Club logo & colours','Photo uploads','AI newspaper reports','Sponsor management','Multiple admins','Push notifications'].map(f => (
-                  <li key={f} className="flex items-start gap-1.5 text-xs text-gray-700"><span className="text-green-600 mt-0.5">✓</span>{f}</li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center bg-green-700 hover:bg-green-800 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Get Started</Link>
-            </div>
-            {/* Press */}
-            <div className="border-2 border-blue-600 rounded-2xl p-5 bg-blue-50 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] font-bold px-3 py-1 rounded-full">MEDIA</div>
-              <p className="font-bold text-blue-800 text-xs uppercase tracking-wide mb-2">Press Pass</p>
-              <p className="text-3xl font-black text-gray-900 mb-0.5">€34.99<span className="text-sm font-normal text-gray-400">/mo</span></p>
-              <p className="text-xs text-gray-400 mb-4">or €299.99/year</p>
-              <ul className="space-y-1.5 mb-5">
-                {['Everything in County','Media profile (not club)','Cover multiple clubs & sports','Link reports to media website','Report attribution','Verified press badge'].map(f => (
-                  <li key={f} className="flex items-start gap-1.5 text-xs text-gray-700"><span className="text-blue-600 mt-0.5">✓</span>{f}</li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl text-sm transition-colors">Get Started</Link>
-            </div>
-          </div>
-        </div>
-      </section>
+              <h1
+                className="text-3xl sm:text-4xl lg:text-5xl font-black leading-[1.12] tracking-tight mb-5"
+                style={{ color: HEADING }}
+              >
+                Live Match Reports for GAA and Soccer Clubs
+              </h1>
 
-      {/* ── SPORTS ── */}
-      <section className="px-4 py-12 bg-white border-y border-gray-100">
-        <div className="max-w-3xl mx-auto text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-6">Sports Supported</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {SPORTS.map(s => (
-              <div key={s.name} className="flex items-center gap-2 bg-green-50 border border-green-100 rounded-full px-5 py-2.5">
-                <span className="text-lg">{s.emoji}</span>
-                <span className="font-semibold text-sm text-gray-800">{s.name}</span>
+              <p className="text-base sm:text-lg leading-relaxed mb-8 max-w-lg" style={{ color: BODY }}>
+                Track scores, scorers, cards, substitutions, photos and key moments — then turn every match into a clean, shareable report.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-3 mb-4">
+                <motion.div
+                  animate={{
+                    boxShadow: [
+                      '0 4px 14px rgba(26, 107, 60, 0.35)',
+                      '0 4px 24px rgba(26, 107, 60, 0.55)',
+                      '0 4px 14px rgba(26, 107, 60, 0.35)',
+                    ],
+                  }}
+                  transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+                  className="rounded-xl"
+                >
+                  <Link
+                    to="/signup"
+                    className="inline-flex items-center justify-center gap-2 w-full sm:w-auto font-bold text-white px-8 py-4 rounded-xl text-base transition-opacity hover:opacity-95"
+                    style={{ backgroundColor: GREEN }}
+                  >
+                    ☘️ Start Free Trial
+                  </Link>
+                </motion.div>
+                <Link
+                  to="/pricing"
+                  className="inline-flex items-center justify-center font-bold px-8 py-4 rounded-xl text-base border-2 transition-colors hover:bg-gray-50"
+                  style={{ color: HEADING, borderColor: '#e5e7eb' }}
+                >
+                  View Pricing
+                </Link>
               </div>
-            ))}
-          </div>
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mt-8 mb-4">Coming Soon</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {COMING_SOON_SPORTS.map(s => (
-              <div key={s.name} className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-5 py-2.5 opacity-70">
-                <span className="text-lg">{s.emoji}</span>
-                <span className="font-semibold text-sm text-gray-500">{s.name}</span>
-                <span className="text-[10px] font-bold uppercase tracking-wide text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">Soon</span>
+
+              <p className="text-sm mb-6" style={{ color: BODY }}>
+                Join clubs across Ireland — free to start
+              </p>
+
+              <StarRating />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+              className="relative"
+            >
+              <div className="rounded-2xl overflow-hidden shadow-2xl shadow-gray-200/80 border border-gray-100">
+                <img
+                  src="/images/hurling-hero.jpg"
+                  alt="Hurling action on the pitch"
+                  className="w-full aspect-[4/3] object-cover"
+                />
+                <div className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-64">
+                  <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg border border-gray-100">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                      <span className="text-xs font-bold uppercase tracking-wider" style={{ color: GREEN }}>
+                        Live match
+                      </span>
+                    </div>
+                    <p className="text-sm font-bold" style={{ color: HEADING }}>
+                      Barryroe 1-09 · Kilbrittain 0-07
+                    </p>
+                  </div>
+                </div>
               </div>
-            ))}
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* ── FEATURES ── */}
-      <section className="px-4 py-16 bg-gray-50">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-black text-center text-gray-900 mb-2">Everything you need on match day</h2>
-          <p className="text-center text-gray-500 mb-10">Built for club PROs, managers and supporters</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {FEATURES.map(f => (
-              <div key={f.title} className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-                <div className="text-3xl mb-3">{f.icon}</div>
-                <h3 className="font-bold text-gray-900 mb-1">{f.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{f.desc}</p>
-              </div>
+      <section id="features" className="py-16 sm:py-24 scroll-mt-20" style={{ backgroundColor: SECTION_BG }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <motion.div {...fadeUp} className="text-center mb-12 sm:mb-14">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: GREEN }}>
+              Features
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight" style={{ color: HEADING }}>
+              Everything you need on match day
+            </h2>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {FEATURES.map((f, i) => (
+              <motion.div
+                key={f.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-30px' }}
+                transition={{ delay: i * 0.06, duration: 0.4 }}
+                className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <span className="text-3xl mb-4 block" role="img" aria-hidden="true">{f.emoji}</span>
+                <h3 className="font-bold text-lg mb-2" style={{ color: HEADING }}>{f.title}</h3>
+                <p className="text-sm leading-relaxed" style={{ color: BODY }}>{f.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── SOCIAL PROOF ── */}
+      <section className="py-16 sm:py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <motion.div {...fadeUp} className="text-center mb-12">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: GREEN }}>
+              Testimonials
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight" style={{ color: HEADING }}>
+              Trusted by clubs and journalists
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {TESTIMONIALS.map((t, i) => (
+              <motion.blockquote
+                key={t.name}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.4 }}
+                className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col"
+              >
+                <div className="flex gap-0.5 mb-4">
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-sm leading-relaxed flex-1 mb-5" style={{ color: BODY }}>
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+                <footer>
+                  <p className="font-bold text-sm" style={{ color: HEADING }}>{t.name}</p>
+                  <p className="text-xs mt-0.5" style={{ color: BODY }}>{t.role}</p>
+                </footer>
+              </motion.blockquote>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PRICING ── */}
+      <section id="pricing" className="py-16 sm:py-24 scroll-mt-20" style={{ backgroundColor: SECTION_BG }}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <motion.div {...fadeUp} className="text-center mb-12">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: GREEN }}>
+              Pricing
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight mb-3" style={{ color: HEADING }}>
+              Simple plans for every club
+            </h2>
+            <p className="text-base max-w-xl mx-auto" style={{ color: BODY }}>
+              Start free and upgrade when you need more matches, photos and AI reports.
+            </p>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {PLANS.map((plan, i) => (
+              <motion.div
+                key={plan.id}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06, duration: 0.4 }}
+                className={`relative flex flex-col rounded-2xl p-6 bg-white border ${
+                  plan.highlight
+                    ? 'border-2 shadow-lg'
+                    : 'border-gray-100 shadow-sm'
+                }`}
+                style={plan.highlight ? { borderColor: GREEN } : undefined}
+              >
+                {plan.badge && (
+                  <span
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-bold uppercase tracking-wider text-white px-3 py-1 rounded-full"
+                    style={{ backgroundColor: GREEN }}
+                  >
+                    {plan.badge}
+                  </span>
+                )}
+                <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: BODY }}>
+                  {plan.name}
+                </p>
+                <p className="text-3xl font-black mb-0.5" style={{ color: HEADING }}>
+                  {plan.price}
+                </p>
+                <p className="text-xs mb-5" style={{ color: BODY }}>{plan.period}</p>
+                <ul className="space-y-2.5 mb-6 flex-1">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm" style={{ color: BODY }}>
+                      <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: GREEN }} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to="/signup"
+                  className={`block w-full text-center font-bold py-3 rounded-xl text-sm transition-all ${
+                    plan.highlight
+                      ? 'text-white hover:opacity-90'
+                      : 'border-2 hover:bg-gray-50'
+                  }`}
+                  style={
+                    plan.highlight
+                      ? { backgroundColor: GREEN }
+                      : { color: HEADING, borderColor: '#e5e7eb' }
+                  }
+                >
+                  {plan.cta}
+                </Link>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
-      <section className="px-4 py-16 bg-white">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-black text-center text-gray-900 mb-2">How it works</h2>
-          <p className="text-center text-gray-500 mb-10">Up and running in minutes, not hours</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {STEPS.map(s => (
-              <div key={s.num} className="text-center">
-                <div className="w-14 h-14 bg-green-700 text-white rounded-2xl flex items-center justify-center font-black text-xl mx-auto mb-4">
-                  {s.num}
+      <section id="how-it-works" className="py-16 sm:py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <motion.div {...fadeUp} className="text-center mb-12 sm:mb-14">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] mb-3" style={{ color: GREEN }}>
+              How it works
+            </p>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight" style={{ color: HEADING }}>
+              Up and running in three steps
+            </h2>
+          </motion.div>
+
+          <div className="grid sm:grid-cols-3 gap-8 sm:gap-10">
+            {STEPS.map((step, i) => (
+              <motion.div
+                key={step.num}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.4 }}
+                className="text-center"
+              >
+                <div
+                  className="w-14 h-14 mx-auto mb-5 rounded-2xl flex items-center justify-center text-xl font-black text-white shadow-md"
+                  style={{ backgroundColor: GREEN }}
+                >
+                  {step.num}
                 </div>
-                <h3 className="font-bold text-gray-900 mb-2">{s.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{s.desc}</p>
-              </div>
+                <h3 className="font-bold text-lg mb-2" style={{ color: HEADING }}>
+                  {step.title}
+                </h3>
+                <p className="text-sm leading-relaxed max-w-xs mx-auto" style={{ color: BODY }}>
+                  {step.desc}
+                </p>
+              </motion.div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ── DEMO ── */}
-      <section id="demo" className="px-4 py-16 bg-[#0B1A2E]">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-black text-white mb-2">See it in action</h2>
-          <p className="text-blue-200 mb-10">A live match card — exactly what supporters see on their phone</p>
-          <DemoMatch />
-          <Link to="/signup"
-            className="mt-8 inline-block bg-white text-[#0B1A2E] hover:bg-gray-100 font-black px-8 py-4 rounded-2xl text-base transition-colors shadow-lg">
-            Sign Up and Start Reporting
-          </Link>
-        </div>
-      </section>
-
-      {/* ── PRICING ── */}
-      <section className="px-4 py-16 bg-white">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-black text-center text-gray-900 mb-2">Simple pricing</h2>
-          <p className="text-center text-gray-500 mb-10">No hidden fees. Cancel anytime.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-
-            {/* Club */}
-            <div className="border-2 border-gray-200 rounded-2xl p-6">
-              <p className="font-bold text-gray-500 text-sm uppercase tracking-wide mb-2">Club</p>
-              <p className="text-4xl font-black text-gray-900 mb-1">€4.99<span className="text-lg font-bold text-gray-500">/mo</span></p>
-              <p className="text-xs text-gray-400 mb-1">or €44.99/year</p>
-              <p className="text-sm text-gray-500 mb-5">Perfect for getting started</p>
-              <ul className="space-y-2 mb-8">
-                {['Create matches','Add line-ups manually','Record match incidents & timeline','Generate basic match report','View and edit fixtures','Basic squad management'].map(item => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-green-600 mt-0.5">✓</span>{item}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center border-2 border-green-700 text-green-700 hover:bg-green-50 font-bold py-3 rounded-xl transition-colors">Get Started</Link>
-            </div>
-
-            {/* County */}
-            <div className="border-2 border-green-700 rounded-2xl p-6 bg-green-50 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-700 text-white text-xs font-bold px-4 py-1 rounded-full">MOST POPULAR</div>
-              <p className="font-bold text-green-800 text-sm uppercase tracking-wide mb-2">County</p>
-              <p className="text-4xl font-black text-gray-900 mb-1">€12.99<span className="text-lg font-bold text-gray-500">/mo</span></p>
-              <p className="text-xs text-gray-400 mb-1">or €119.99/year</p>
-              <p className="text-sm text-gray-500 mb-5">For active clubs and multiple teams</p>
-              <ul className="space-y-2 mb-8">
-                {['Everything in Club','Club profile with logo & colours','Photo uploads in match timeline','Full match history','Social media links','Advanced report editing','AI newspaper-style reports','Multiple admin users','Sponsor management','Push notifications to followers'].map(item => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-green-600 mt-0.5">✓</span>{item}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center bg-green-700 hover:bg-green-800 text-white font-bold py-3 rounded-xl transition-colors shadow-md">Start County</Link>
-            </div>
-
-            {/* Press */}
-            <div className="border-2 border-blue-600 rounded-2xl p-6 bg-blue-50 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full">MULTI-CLUB</div>
-              <p className="font-bold text-blue-800 text-sm uppercase tracking-wide mb-2">Press Pass</p>
-              <p className="text-4xl font-black text-gray-900 mb-1">€34.99<span className="text-lg font-bold text-gray-500">/mo</span></p>
-              <p className="text-xs text-gray-400 mb-1">or €299.99/year</p>
-              <p className="text-sm text-gray-500 mb-5">For reporters and multi-club coverage</p>
-              <ul className="space-y-2 mb-8">
-                {['Everything in County','Media profile instead of club profile','Cover multiple clubs & sports','Link reports to media website','Attribution of reports to media outlet','Verified press badge on profile'].map(item => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
-                    <span className="text-blue-600 mt-0.5">✓</span>{item}
-                  </li>
-                ))}
-              </ul>
-              <Link to="/signup" className="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors shadow-md">Start Press Pass</Link>
-            </div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ── SPONSOR VALUE ── */}
-      <section className="px-4 py-14 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="text-4xl mb-4">🤝</div>
-          <h2 className="text-2xl font-black text-gray-900 mb-3">Give your sponsors real visibility</h2>
-          <p className="text-gray-600 leading-relaxed">
-            Every match page carries your sponsor's name, logo and link. Match reports mention them by name.
-            Fans who read live updates see the sponsor on every visit — giving local businesses genuine exposure
-            through the club they support.
-          </p>
-        </div>
-      </section>
-
-      {/* ── FAQ ── */}
-      <section className="px-4 py-16 bg-white">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl font-black text-center text-gray-900 mb-10">Frequently asked questions</h2>
-          <div className="space-y-5">
-            {FAQS.map(faq => (
-              <div key={faq.q} className="border border-gray-100 rounded-2xl p-5">
-                <h3 className="font-bold text-gray-900 mb-2">{faq.q}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ── */}
-      <section className="px-4 py-16 bg-[#0B1A2E] text-center">
-        <div className="max-w-xl mx-auto">
-          <h2 className="text-3xl font-black text-white mb-4">Ready to report your next match?</h2>
-          <p className="text-blue-200 mb-8">Join clubs already using ClubReporter to keep their community informed.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/signup" className="bg-white text-[#0B1A2E] hover:bg-gray-100 font-black px-10 py-5 rounded-2xl text-xl transition-colors shadow-xl">Sign Up Now</Link>
-            <Link to="/login" className="border-2 border-white/30 text-white hover:bg-white/10 font-bold px-8 py-5 rounded-2xl text-base transition-colors">Log In</Link>
-          </div>
+          <motion.div {...fadeUp} className="text-center mt-14">
+            <Link
+              to="/signup"
+              className="inline-flex items-center gap-2 font-bold text-white px-10 py-4 rounded-xl text-base transition-opacity hover:opacity-95 shadow-md"
+              style={{ backgroundColor: GREEN }}
+            >
+              ☘️ Start Free Trial
+            </Link>
+          </motion.div>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="px-4 py-8 border-t border-gray-100 text-center text-xs text-gray-400">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <div className="w-5 h-5 bg-[#0B1A2E] rounded flex items-center justify-center">
-            <span className="text-white font-black text-[9px]">CR</span>
-          </div>
-          <span className="font-bold text-gray-700">ClubReporter</span>
-        </div>
-        <p>© {new Date().getFullYear()} ClubReporter. Built for GAA and local sports clubs.</p>
-      </footer>
+      <footer className="border-t border-gray-100 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-14">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-10">
+            <div>
+              <Logo className="mb-3" />
+              <p className="text-xs font-bold uppercase tracking-[0.15em] mt-3" style={{ color: GREEN }}>
+                Report Every Minute
+              </p>
+              <p className="text-sm mt-3 max-w-xs leading-relaxed" style={{ color: BODY }}>
+                Live match reporting for GAA and soccer clubs across Ireland.
+              </p>
+            </div>
 
+            <div>
+              <p className="font-bold text-sm mb-4" style={{ color: HEADING }}>Quick links</p>
+              <ul className="space-y-2.5 text-sm">
+                {[
+                  { label: 'Home', href: '/' },
+                  { label: 'Features', href: '#features' },
+                  { label: 'Pricing', href: '#pricing' },
+                  { label: 'Sign Up', to: '/signup' },
+                  { label: 'Log In', to: '/login' },
+                  { label: 'Contact', href: 'mailto:hello@clubreporter.ie' },
+                ].map((link) => (
+                  <li key={link.label}>
+                    {link.to ? (
+                      <Link to={link.to} className="hover:opacity-80 transition-opacity" style={{ color: BODY }}>
+                        {link.label}
+                      </Link>
+                    ) : link.href.startsWith('#') || link.href.startsWith('mailto:') ? (
+                      <a href={link.href} className="hover:opacity-80 transition-opacity" style={{ color: BODY }}>
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link to={link.href} className="hover:opacity-80 transition-opacity" style={{ color: BODY }}>
+                        {link.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="font-bold text-sm mb-4" style={{ color: HEADING }}>Follow us</p>
+              <div className="flex gap-3">
+                {[
+                  { Icon: Facebook, label: 'Facebook', href: 'https://facebook.com' },
+                  { Icon: Twitter, label: 'Twitter', href: 'https://twitter.com' },
+                  { Icon: Instagram, label: 'Instagram', href: 'https://instagram.com' },
+                ].map(({ Icon, label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={label}
+                    className="w-10 h-10 rounded-xl border border-gray-200 flex items-center justify-center hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                    style={{ color: HEADING }}
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-8 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs" style={{ color: BODY }}>
+            <p>© 2026 ClubReporter.ie</p>
+            <p className="font-semibold" style={{ color: GREEN }}>Built for Irish sport</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

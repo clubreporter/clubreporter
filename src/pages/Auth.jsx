@@ -43,7 +43,7 @@ function OrDivider() {
 }
 
 const fieldClass =
-  'mt-1.5 h-11 text-base placeholder:text-gray-400 border-gray-200 focus-visible:ring-green-600';
+  'mt-1.5 h-11 text-base text-gray-900 bg-white placeholder:text-gray-400 border-gray-200 focus-visible:ring-green-600';
 
 const labelClass = 'text-sm font-semibold text-gray-800';
 
@@ -195,9 +195,19 @@ export default function Auth() {
             </div>
 
             <div>
-              <Label htmlFor="password" className={labelClass}>
-                Password
-              </Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className={labelClass}>
+                  Password
+                </Label>
+                {!isSignUp && (
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm text-green-700 font-semibold hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                )}
+              </div>
               <PasswordInput
                 id="password"
                 name="password"
