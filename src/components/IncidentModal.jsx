@@ -162,7 +162,7 @@ export default function IncidentModal({ incident, match, defaultMinute, players,
 
   const handleConfirm = () => {
     const details = buildCommentary(type, effectiveMinute, teamName, player.trim(), playerOff.trim(), note.trim());
-    onConfirm({ type, minute: effectiveMinute, team, player: player.trim(), playerOff: playerOff.trim(), details, scores: incident.scores });
+    onConfirm({ type, minute: effectiveMinute, team, player: player.trim(), playerOff: playerOff.trim(), details, scores: incident.scores, scoreDelta: incident.scoreDelta });
   };
 
   const PlayerField = ({ value, onChange, inputMode, setInputMode, label = 'Player' }) => (

@@ -6,6 +6,7 @@ function profileToUser(profile, authUser) {
     id: authUser.id,
     email: authUser.email,
     profileType: profile?.profile_type ?? null,
+    primarySport: profile?.primary_sport ?? null,
     mediaOutletName: profile?.media_outlet_name ?? null,
     mediaVerificationInfo: profile?.media_verification_info ?? null,
     subscriptionPlan: profile?.subscription_plan ?? 'club',
@@ -33,6 +34,7 @@ export async function updateProfile(updates) {
 
   const row = {};
   if (updates.profileType !== undefined) row.profile_type = updates.profileType;
+  if (updates.primarySport !== undefined) row.primary_sport = updates.primarySport;
   if (updates.mediaOutletName !== undefined) row.media_outlet_name = updates.mediaOutletName;
   if (updates.mediaVerificationInfo !== undefined) row.media_verification_info = updates.mediaVerificationInfo;
   if (updates.subscriptionPlan !== undefined) row.subscription_plan = updates.subscriptionPlan;

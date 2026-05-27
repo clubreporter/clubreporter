@@ -1,6 +1,7 @@
 import { usePlan } from '../lib/usePlan';
 import PastDueBanner from './PastDueBanner';
 import BottomNav from './BottomNav';
+import { SportBadge } from '@/lib/useSportBrand.jsx';
 import { Outlet } from 'react-router-dom';
 
 export default function Layout() {
@@ -9,15 +10,16 @@ export default function Layout() {
   return (
     <div className="min-h-screen min-h-[100dvh] bg-background flex flex-col">
       <header className="sticky top-0 z-40 bg-primary text-primary-foreground px-4 py-3 shadow-sm safe-top">
-        <div className="max-w-lg mx-auto flex items-center gap-3">
-          <img
-            src="https://media.base44.com/images/public/6a11bfdd862d168224f11e9c/4f6e840a5_3_20260524_183643_0001.png"
-            alt="ClubReporter"
-            className="h-9 w-9 object-contain rounded-lg shrink-0"
-          />
-          <span className="font-black text-lg tracking-tight">
-            ClubReporter<span className="opacity-90">.ie</span>
-          </span>
+        <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-9 w-9 rounded-lg bg-white/15 flex items-center justify-center shrink-0 font-black text-sm">
+              CR
+            </div>
+            <span className="font-black text-lg tracking-tight truncate">
+              ClubReporter<span className="opacity-90">.ie</span>
+            </span>
+          </div>
+          <SportBadge />
         </div>
       </header>
 

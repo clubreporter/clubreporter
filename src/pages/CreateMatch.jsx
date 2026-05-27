@@ -1,23 +1,34 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { entities } from '@/api/entities';
+import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SPORTS, WEATHER_OPTIONS, ATTENDANCE_OPTIONS, isGAA, getOpponentPositionSlots, getOpponentPositionCount, buildDefaultOpponentLineup, buildEmptyOpponentInputs, isDefaultOpponentLineup } from '../lib/sportConfig';
+import { WEATHER_OPTIONS, ATTENDANCE_OPTIONS, isGAA, isSoccer, SOCCER_FORMATIONS, defaultMatchSportForUser, filterSportsForUser, getOpponentPositionCount, getOpponentPositionSlots, buildDefaultOpponentLineup, buildEmptyOpponentInputs, isDefaultOpponentLineup } from '../lib/sportConfig';
 import { loadActiveTeamsFromStorage } from '../lib/clubGrades';
 import { playerMatchesCategory, dedupePlayers } from '../lib/players';
 import LineupSelector from '../components/LineupSelector';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Upload, ArrowUpDown } from 'lucide-react';
 
+function lineupSize(sport) {
+  return isSoccer(sport) ? 11 : 15;
+}
+
+function subSize(sport) {
+  return isSoccer(sport) ? 7 : 10;
+}
+
 export default function CreateMatch() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const availableSports = useMemo(() => filterSportsForUser(user), [user]);
   const [form, setForm] = useState({
-    sport: 'gaelic_football', homeTeamName: '', awayTeamName: '', competition: '',
+    sport: defaultMatchSportForUser(user), homeTeamName: '', awayTeamName: '', competition: '',
     category: '', matchDate: '', venue: '', referee: '', weather: '', attendance: '',
-    sponsorName: '', sponsorLogo: '', sponsorLink: '', template: 'quick',
+    sponsorName: '', sponsorLogo: '', sponsorLink: '', template: 'quick', formation: '4-4-2',
   });
   const [teams, setTeams] = useState([]);
   const [venues, setVenues] = useState([]);
@@ -261,10 +272,24 @@ export default function CreateMatch() {
         </Label>
         <Select value={form.sport} onValueChange={set('sport')}>
           <SelectTrigger className={fieldErrors.sport ? fieldErrorClass : ''}><SelectValue /></SelectTrigger>
-          <SelectContent>{SPORTS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent>
+          <SelectContent>{availableSports.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent>
         </Select>
         {fieldErrors.sport && <p className="text-xs text-red-600 mt-1">Sport is required</p>}
       </div>
+
+      {isSoccer(form.sport) && (
+        <div>
+          <Label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Formation</Label>
+          <Select value={form.formation} onValueChange={set('formation')}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {SOCCER_FORMATIONS.map((f) => (
+                <SelectItem key={f} value={f}>{f}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
 
       {/* Team matchup block */}
       <div className={`rounded-xl border overflow-hidden ${fieldErrors.homeTeam || fieldErrors.awayTeam ? 'border-red-500 ring-1 ring-red-500' : 'border-border'}`}>
@@ -381,15 +406,15 @@ export default function CreateMatch() {
                 selected={homeLineup}
                 onChange={setHomeLineup}
                 excluded={homeSubs}
-                max={isGAA(form.sport) ? 15 : 11}
-                label={`Starting ${isGAA(form.sport) ? '15' : '11'}`}
+                max={lineupSize(form.sport)}
+                label={`Starting ${lineupSize(form.sport)}`}
               />
               <LineupSelector
                 players={categoryPlayers}
                 selected={homeSubs}
                 onChange={setHomeSubs}
                 excluded={homeLineup}
-                max={isGAA(form.sport) ? 10 : 7}
+                max={subSize(form.sport)}
                 label="Substitutes"
               />
             </>

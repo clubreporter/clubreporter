@@ -1,9 +1,10 @@
 import { uploadFile } from '@/api/storage';
+import { getReportSystemPrompt } from '@/lib/sportConfig';
 
 export const Core = {
   UploadFile: uploadFile,
 
-  async InvokeLLM({ prompt }) {
+  async InvokeLLM({ prompt, sport = 'gaelic_football' }) {
     const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
     if (!apiKey) {
       return (
@@ -21,7 +22,7 @@ export const Core = {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { role: 'system', content: 'You are a professional GAA sports journalist.' },
+          { role: 'system', content: getReportSystemPrompt(sport) },
           { role: 'user', content: prompt },
         ],
         temperature: 0.7,

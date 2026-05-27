@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Radio, Users, Calendar, Trophy, Building2 } from 'lucide-react';
 import MatchCard from '../components/MatchCard';
 import { applyClubColours } from '../lib/clubColours';
+import { SportBadge } from '@/lib/useSportBrand.jsx';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -86,7 +87,10 @@ export default function Dashboard() {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{greeting}</p>
+            <div className="flex items-center gap-2 flex-wrap mb-0.5">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{greeting}</p>
+              <SportBadge />
+            </div>
             <h1 className="text-xl font-black truncate">{displayName}</h1>
             {!club && user?.profileType !== 'media' && (
               <Link to="/club" className="text-xs text-primary font-semibold hover:underline">

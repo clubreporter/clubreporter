@@ -10,7 +10,7 @@ import LiveScoreboard from '../components/LiveScoreboard';
 import IncidentModal from '../components/IncidentModal';
 import IncidentButtons from '../components/IncidentButtons';
 import Timeline from '../components/Timeline';
-import { STATUS_LABELS, isGAA, formatGAAScore } from '../lib/sportConfig';
+import { STATUS_LABELS, isGAA, isRugby, formatGAAScore } from '../lib/sportConfig';
 
 export default function LiveMatch() {
   const { matchId } = useParams();
@@ -62,7 +62,9 @@ export default function LiveMatch() {
 
   const getEffectiveMinute = () => {
     if (minute) return minute;
-    if (match && isGAA(match.sport)) return timerToMinute(timerSeconds);
+    if (match && (isGAA(match.sport) || match.sport === 'soccer' || isRugby(match.sport))) {
+      return timerToMinute(timerSeconds);
+    }
     return '';
   };
 
@@ -70,12 +72,13 @@ export default function LiveMatch() {
     const updates = { status: newStatus };
     if (newStatus === 'half_time' && match) {
       const gaa = isGAA(match.sport);
+      const rugby = isRugby(match.sport);
       updates.halfTimeHome = gaa
         ? `${match.homeGoals || 0}-${String(match.homePoints || 0).padStart(2, '0')}`
-        : String(match.homeGoals || 0);
+        : String(rugby ? match.homeGoals || 0 : match.homeGoals || 0);
       updates.halfTimeAway = gaa
         ? `${match.awayGoals || 0}-${String(match.awayPoints || 0).padStart(2, '0')}`
-        : String(match.awayGoals || 0);
+        : String(rugby ? match.awayGoals || 0 : match.awayGoals || 0);
     }
     await entities.Match.update(matchId, updates);
     setMatch(m => ({ ...m, ...updates }));
@@ -117,11 +120,14 @@ export default function LiveMatch() {
     setMinute('');
   };
 
-  const addIncident = async ({ type, minute: incMinute, team, player, details, scores }) => {
+  const addIncident = async ({ type, minute: incMinute, team, player, details, scores, scoreDelta }) => {
     setModalIncident(null);
     setMinute('');
     const scoreUpdate = { currentMinute: incMinute, lastIncidentId: '_pending' };
-    if (scores === 'goals') {
+    if (scores === 'delta' && scoreDelta) {
+      const f = team === 'home' ? 'homeGoals' : 'awayGoals';
+      scoreUpdate[f] = (match[f] || 0) + scoreDelta;
+    } else if (scores === 'goals') {
       const f = team === 'home' ? 'homeGoals' : 'awayGoals';
       scoreUpdate[f] = (match[f] || 0) + 1;
     } else if (scores === 'points') {
@@ -138,7 +144,7 @@ export default function LiveMatch() {
     scoreUpdate.lastIncidentId = inc.id;
     await entities.Match.update(matchId, scoreUpdate);
     setMatch(m => ({ ...m, ...scoreUpdate }));
-    setLastIncident({ ...inc, config: { scores } });
+    setLastIncident({ ...inc, config: { scores, scoreDelta } });
     setIncidents(prev => [...prev, inc]);
   };
 
@@ -146,7 +152,10 @@ export default function LiveMatch() {
     if (!lastIncident) return;
     const cfg = lastIncident.config;
     const scoreUpdate = {};
-    if (cfg?.scores === 'goals') {
+    if (cfg?.scores === 'delta' && cfg?.scoreDelta) {
+      const f = lastIncident.team === 'home' ? 'homeGoals' : 'awayGoals';
+      scoreUpdate[f] = Math.max(0, (match[f] || 0) - cfg.scoreDelta);
+    } else if (cfg?.scores === 'goals') {
       const f = lastIncident.team === 'home' ? 'homeGoals' : 'awayGoals';
       scoreUpdate[f] = Math.max(0, (match[f] || 0) - 1);
     } else if (cfg?.scores === 'points') {

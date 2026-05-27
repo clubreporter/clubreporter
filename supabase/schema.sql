@@ -332,4 +332,14 @@ grant usage on schema public to anon, authenticated;
 grant all on all tables in schema public to authenticated;
 grant select on public.matches to anon;
 grant select on public.match_incidents to anon;
+
+-- ---------------------------------------------------------------------------
+-- Multi-sport migration (run if upgrading existing database)
+-- ---------------------------------------------------------------------------
+alter table public.profiles add column if not exists primary_sport text
+  check (primary_sport in ('gaa', 'soccer', 'rugby', 'multi', 'media'));
+
+alter table public.matches drop constraint if exists matches_sport_check;
+alter table public.matches add constraint matches_sport_check
+  check (sport in ('gaelic_football', 'hurling', 'camogie', 'ladies_football', 'soccer', 'rugby'));
 grant execute on function public.delete_user_account() to authenticated;

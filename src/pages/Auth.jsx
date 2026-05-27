@@ -55,10 +55,29 @@ export default function Auth() {
   const { isAuthenticated, isLoadingAuth, checkUserAuth } = useAuth();
 
   const redirectParam = searchParams.get('redirect');
+  const sportParam = searchParams.get('sport');
+  const accountParam = searchParams.get('account');
   const redirect =
     redirectParam && redirectParam.startsWith('/') && !['/login', '/signup'].includes(redirectParam)
       ? redirectParam
       : '/dashboard';
+
+  const onboardingUrl = () => {
+    const params = new URLSearchParams();
+    if (accountParam) params.set('account', accountParam);
+    if (sportParam) params.set('sport', sportParam);
+    const qs = params.toString();
+    return qs ? `/onboarding?${qs}` : '/onboarding';
+  };
+
+  const signupQuerySuffix = () => {
+    const params = new URLSearchParams();
+    if (accountParam) params.set('account', accountParam);
+    if (sportParam) params.set('sport', sportParam);
+    if (redirect !== '/dashboard') params.set('redirect', redirect);
+    const qs = params.toString();
+    return qs ? `?${qs}` : '';
+  };
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -85,8 +104,8 @@ export default function Auth() {
 
   const afterAuth = async () => {
     const user = await checkUserAuth();
-    if (user && !user.profileType) {
-      navigate('/onboarding', { replace: true });
+    if (user && (!user.profileType || (user.profileType === 'club' && !user.primarySport))) {
+      navigate(onboardingUrl(), { replace: true });
     } else {
       navigate(redirect, { replace: true });
     }
@@ -266,7 +285,7 @@ export default function Auth() {
               <>
                 Already have an account?{' '}
                 <Link
-                  to={`/login${redirect !== '/dashboard' ? `?redirect=${encodeURIComponent(redirect)}` : ''}`}
+                  to={`/login${signupQuerySuffix()}`}
                   className="text-green-700 font-semibold hover:underline min-h-[44px] inline-flex items-center"
                 >
                   Sign in
@@ -276,7 +295,7 @@ export default function Auth() {
               <>
                 New to ClubReporter?{' '}
                 <Link
-                  to={`/signup${redirect !== '/dashboard' ? `?redirect=${encodeURIComponent(redirect)}` : ''}`}
+                  to={`/signup${signupQuerySuffix()}`}
                   className="text-green-700 font-semibold hover:underline min-h-[44px] inline-flex items-center"
                 >
                   Create account

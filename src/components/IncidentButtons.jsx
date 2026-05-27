@@ -1,13 +1,13 @@
 import { INCIDENT_TYPES } from '../lib/sportConfig';
 
-const SCORING_TYPES = new Set([
+const GAA_SCORING_TYPES = new Set([
   'goal', 'point', 'wide', 'free_scored', 'free_missed',
   '45_scored', '45_missed', '65_scored', '65_missed',
   'penalty_scored', 'penalty_missed', 'own_goal',
 ]);
 
-const DISCIPLINE_TYPES = new Set(['yellow_card', 'black_card', 'red_card']);
-const MATCH_TYPES = new Set(['substitution', 'injury', 'manual_update']);
+const DISCIPLINE_TYPES = new Set(['yellow_card', 'black_card', 'red_card', 'sin_bin']);
+const MATCH_TYPES = new Set(['substitution', 'injury', 'manual_update', 'scrum', 'lineout', 'var_review', 'offside', 'assist']);
 
 const DISPLAY_LABELS = {
   goal: 'Goal',
@@ -22,24 +22,48 @@ const DISPLAY_LABELS = {
   penalty_scored: 'Penalty Scored',
   penalty_missed: 'Penalty Missed',
   own_goal: 'Own Goal',
+  try: 'Try',
+  conversion: 'Conversion',
+  penalty: 'Penalty',
+  drop_goal: 'Drop Goal',
   yellow_card: 'Yellow Card',
   black_card: 'Black Card',
   red_card: 'Red Card',
+  sin_bin: 'Sin Bin',
   substitution: 'Sub',
   injury: 'Injury',
   manual_update: 'Update',
+  assist: 'Assist',
+  var_review: 'VAR',
+  offside: 'Offside',
+  scrum: 'Scrum',
+  lineout: 'Lineout',
 };
+
+function isScoringIncident(inc) {
+  if (inc.scores) return true;
+  return GAA_SCORING_TYPES.has(inc.type);
+}
+
+function isDisciplineIncident(inc) {
+  return DISCIPLINE_TYPES.has(inc.type);
+}
+
+function isMatchEvent(inc) {
+  return MATCH_TYPES.has(inc.type) || (!isScoringIncident(inc) && !isDisciplineIncident(inc));
+}
 
 function buttonClass(type) {
   if (DISCIPLINE_TYPES.has(type)) {
     if (type === 'yellow_card') return 'bg-yellow-400 hover:bg-yellow-300 text-gray-900 border-yellow-300';
     if (type === 'black_card') return 'bg-gray-950 hover:bg-black text-white border-gray-700';
     if (type === 'red_card') return 'bg-red-600 hover:bg-red-500 text-white border-red-400';
+    if (type === 'sin_bin') return 'bg-orange-500 hover:bg-orange-400 text-white border-orange-400';
   }
   if (MATCH_TYPES.has(type)) {
     return 'bg-slate-600 hover:bg-slate-500 text-white border-slate-500';
   }
-  if (SCORING_TYPES.has(type)) {
+  if (isScoringIncident({ type, scores: GAA_SCORING_TYPES.has(type) ? 'goals' : null })) {
     if (type.includes('missed') || type === 'wide') {
       return 'bg-emerald-900/80 hover:bg-emerald-800 text-emerald-100 border-emerald-700/50';
     }
@@ -55,9 +79,9 @@ function groupIncidents(sport) {
   const matchEvents = [];
 
   all.forEach((inc) => {
-    if (SCORING_TYPES.has(inc.type)) scoring.push(inc);
-    else if (DISCIPLINE_TYPES.has(inc.type)) discipline.push(inc);
-    else if (MATCH_TYPES.has(inc.type)) matchEvents.push(inc);
+    if (isScoringIncident(inc)) scoring.push(inc);
+    else if (isDisciplineIncident(inc)) discipline.push(inc);
+    else matchEvents.push(inc);
   });
 
   return [

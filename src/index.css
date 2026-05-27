@@ -138,3 +138,11 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
   background-color: #ffffff !important;
 }
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

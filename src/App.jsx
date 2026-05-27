@@ -20,6 +20,11 @@ import Onboarding from './pages/Onboarding.jsx';
 import Billing from './pages/Billing';
 import { loadAndApplyStoredColours } from './lib/clubColours';
 import Landing from './pages/Landing';
+import PressPassPage from './pages/marketing/PressPass';
+import GaelicReporter from './pages/marketing/GaelicReporter';
+import PitchReporter from './pages/marketing/PitchReporter';
+import RugbyReporter from './pages/marketing/RugbyReporter';
+import Pricing from './pages/Pricing';
 import Auth from './pages/Auth';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -56,6 +61,10 @@ const ProtectedLayout = () => {
     return <Navigate to="/onboarding" replace />;
   }
 
+  if (user && user.profileType === 'club' && !user.primarySport && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />;
+  }
+
   return <Outlet />;
 };
 
@@ -73,9 +82,13 @@ const AppRoutes = () => {
       <motion.div key={location.pathname} initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -20, opacity: 0 }} transition={{ duration: 0.18 }}>
         <Routes location={location}>
 
-          {/* Public */}
+          {/* Public marketing */}
           <Route path="/" element={<Landing />} />
-          <Route path="/pricing" element={<Landing />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/gaelicreporter" element={<GaelicReporter />} />
+          <Route path="/pitchreporter" element={<PitchReporter />} />
+          <Route path="/rugbyreporter" element={<RugbyReporter />} />
+          <Route path="/press-pass" element={<PressPassPage />} />
           <Route path="/m/:publicId" element={<PublicMatch />} />
 
           {/* Auth pages — redirect to dashboard if already signed in */}

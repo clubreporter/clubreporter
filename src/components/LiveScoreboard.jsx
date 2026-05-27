@@ -1,4 +1,4 @@
-import { isGAA } from '../lib/sportConfig';
+import { isGAA, isRugby } from '../lib/sportConfig';
 import { Pause, Play } from 'lucide-react';
 
 export function teamInitials(name) {
@@ -23,6 +23,15 @@ function GAAScore({ goals, points, size = 'hero' }) {
   );
 }
 
+function TotalScore({ value, size = 'hero' }) {
+  const big = size === 'hero';
+  return (
+    <p className={`font-black tabular-nums text-white ${big ? 'text-5xl sm:text-6xl' : 'text-3xl'}`}>
+      {value || 0}
+    </p>
+  );
+}
+
 export default function LiveScoreboard({
   match,
   timerSeconds = 0,
@@ -31,10 +40,16 @@ export default function LiveScoreboard({
   showTimer = true,
 }) {
   const gaa = isGAA(match.sport);
+  const rugby = isRugby(match.sport);
   const fmtTimer = (secs) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  const renderScore = (goals, points) => {
+    if (gaa) return <GAAScore goals={goals} points={points} />;
+    return <TotalScore value={goals} />;
   };
 
   return (
@@ -53,11 +68,7 @@ export default function LiveScoreboard({
             </p>
             <p className="text-[10px] font-bold uppercase tracking-widest text-[#1A9E6D]/80 mt-1">Home</p>
             <div className="mt-3">
-              {gaa ? (
-                <GAAScore goals={match.homeGoals} points={match.homePoints} />
-              ) : (
-                <p className="text-5xl sm:text-6xl font-black tabular-nums">{match.homeGoals || 0}</p>
-              )}
+              {renderScore(match.homeGoals, match.homePoints)}
             </div>
           </div>
 
@@ -75,11 +86,7 @@ export default function LiveScoreboard({
             </p>
             <p className="text-[10px] font-bold uppercase tracking-widest text-white/40 mt-1">Away</p>
             <div className="mt-3">
-              {gaa ? (
-                <GAAScore goals={match.awayGoals} points={match.awayPoints} />
-              ) : (
-                <p className="text-5xl sm:text-6xl font-black tabular-nums">{match.awayGoals || 0}</p>
-              )}
+              {renderScore(match.awayGoals, match.awayPoints)}
             </div>
           </div>
         </div>
@@ -103,7 +110,7 @@ export default function LiveScoreboard({
           </div>
         )}
 
-        {showTimer && gaa && (
+        {showTimer && (gaa || match.sport === 'soccer' || rugby) && (
           <div className="mt-5 flex flex-col items-center gap-2">
             <div className="relative flex items-center justify-center">
               <div className="w-28 h-28 rounded-full bg-[#0B1A2E] border-4 border-[#1A9E6D]/40 flex items-center justify-center shadow-[0_0_24px_rgba(26,158,109,0.25)]">

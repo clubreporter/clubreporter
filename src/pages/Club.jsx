@@ -4,7 +4,9 @@ import { LockedBlock } from '../components/UpgradeModal';
 import { entities } from '@/api/entities';
 import { Core } from '@/api/integrations';
 import { deleteAccount as removeAccount } from '@/api/billing';
-import { useAuth } from '@/lib/AuthContext';
+import { updateProfile } from '@/api/auth';
+import { PRIMARY_SPORT_OPTIONS } from '../lib/sportConfig';
+import { applyBrandTheme } from '../lib/brandConfig';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -82,7 +84,8 @@ function ColourPreview({ primary, secondary, accent }) {
 }
 
 export default function Club() {
-  const { logout } = useAuth();
+  const { logout, user, checkUserAuth } = useAuth();
+  const [primarySport, setPrimarySport] = useState(user?.primarySport || 'gaa');
   const [club, setClub] = useState(null);
   const [form, setForm] = useState({
     name: '', county: '', primaryColour: '', secondaryColour: '', accentColour: '',
@@ -123,6 +126,18 @@ export default function Club() {
     });
     entities.Player.list('-created_date', 200).then(setPlayers);
   }, []);
+
+  useEffect(() => {
+    if (user?.primarySport) setPrimarySport(user.primarySport);
+  }, [user?.primarySport]);
+
+  const savePrimarySport = async (sport) => {
+    setPrimarySport(sport);
+    await updateProfile({ primarySport: sport });
+    applyBrandTheme(sport);
+    await checkUserAuth?.();
+    toast.success('Sport mode updated');
+  };
 
   useEffect(() => {
     if (form.primaryColour) applyClubColours(form.primaryColour, form.secondaryColour, form.accentColour);
@@ -264,6 +279,18 @@ export default function Club() {
           </LockedBlock>
 
           <div className="space-y-3">
+            <div>
+              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">Primary sport mode</label>
+              <Select value={primarySport} onValueChange={savePrimarySport}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PRIMARY_SPORT_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.id} value={opt.id}>{opt.emoji} {opt.label} — {opt.brand}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-[11px] text-muted-foreground mt-1">Changes scoring, positions and report style across the app.</p>
+            </div>
             {/* Club Name — locked */}
             <div>
               <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1 flex items-center gap-1.5">

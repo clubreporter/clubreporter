@@ -7,7 +7,7 @@ import { Core } from '@/api/integrations';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Share2, Copy, Check, Sparkles } from 'lucide-react';
-import { isGAA, formatGAAScore, SPORT_LABELS, STATUS_LABELS } from '../lib/sportConfig';
+import { isGAA, formatGAAScore, SPORT_LABELS, STATUS_LABELS, buildReportPrompt } from '../lib/sportConfig';
 import jsPDF from 'jspdf';
 
 export default function MatchReport() {
@@ -59,28 +59,8 @@ export default function MatchReport() {
   const summariseReport = async () => {
     if (!match) return;
     setSummarising(true);
-    const gaa = isGAA(match.sport);
-    const homeScore = gaa ? formatGAAScore(match.homeGoals, match.homePoints) : String(match.homeGoals || 0);
-    const awayScore = gaa ? formatGAAScore(match.awayGoals, match.awayPoints) : String(match.awayGoals || 0);
-    const timelineText = incidents
-      .filter(i => i.type !== 'admin_note')
-      .map(i => `${i.minute}' - ${i.details || i.type}`)
-      .join('\n');
-    const prompt = `You are a GAA/sports match reporter. Write a concise, engaging match report (3-4 paragraphs, newspaper style) based on the following match data.
-
-Match: ${match.homeTeamName} vs ${match.awayTeamName}
-Sport: ${match.sport}
-Competition: ${match.competition || 'N/A'} ${match.category || ''}
-Final Score: ${match.homeTeamName} ${homeScore} - ${awayScore} ${match.awayTeamName}
-${match.halfTimeHome ? `Half Time: ${match.homeTeamName} ${match.halfTimeHome} - ${match.halfTimeAway} ${match.awayTeamName}` : ''}
-${match.venue ? `Venue: ${match.venue}` : ''}
-${match.playerOfMatch ? `Player of the Match: ${match.playerOfMatch}` : ''}
-
-Timeline of Events:
-${timelineText || 'No events recorded.'}
-
-Write the report in flowing prose. Do not use bullet points. Use the team names throughout.`;
-    const summary = await Core.InvokeLLM({ prompt });
+    const prompt = buildReportPrompt(match, incidents);
+    const summary = await Core.InvokeLLM({ prompt, sport: match.sport });
     await entities.Match.update(matchId, { reportDraft: summary });
     setMatch(m => ({ ...m, reportDraft: summary }));
     setSummarising(false);
