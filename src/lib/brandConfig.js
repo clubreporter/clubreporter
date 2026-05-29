@@ -1,5 +1,7 @@
 /** ClubReporter.ie multi-product brand configuration */
 
+export { PRICING_TIERS } from '@/lib/planConfig';
+
 export const BRAND = {
   master: { name: 'ClubReporter.ie', tagline: 'One platform. Sport-specific match reports.' },
   gaa: {
@@ -94,80 +96,6 @@ export const HOME_TESTIMONIALS = [
     quote: 'As a local journalist covering five clubs every weekend, Press Pass has changed everything.',
     name: 'Pat Collins',
     role: 'Southern Star',
-  },
-];
-
-export const PRICING_TIERS = [
-  {
-    id: 'free',
-    name: 'Free',
-    price: '€0',
-    period: 'forever',
-    highlight: false,
-    features: [
-      '4 matches per month',
-      'Manual player entry',
-      'Basic timeline',
-      'Basic report',
-      'All sports supported',
-      'No credit card required',
-    ],
-    cta: 'Sign up free',
-    ctaLink: '/signup',
-  },
-  {
-    id: 'club',
-    name: 'Club',
-    price: '€4.99',
-    period: '/month',
-    altPrice: '€44.99/year',
-    highlight: false,
-    features: [
-      'Unlimited matches',
-      'Saved roster',
-      'Photo uploads',
-      'Sponsor on reports',
-      'Push notifications',
-      'All sports supported',
-    ],
-    cta: 'Start free trial',
-    ctaLink: '/signup',
-  },
-  {
-    id: 'county',
-    name: 'County',
-    price: '€12.99',
-    period: '/month',
-    altPrice: '€119.99/year',
-    highlight: true,
-    badge: 'Most Popular',
-    features: [
-      'Everything in Club',
-      'AI newspaper style reports',
-      'Multiple admins',
-      'Analytics',
-      'Social media push',
-      'All sports supported',
-    ],
-    cta: 'Start free trial',
-    ctaLink: '/signup',
-  },
-  {
-    id: 'presspass',
-    name: 'Press Pass',
-    price: '€34.99',
-    period: '/month',
-    altPrice: '€299.99/year',
-    highlight: false,
-    features: [
-      'Everything in County',
-      'Media profile',
-      'Unlimited clubs',
-      'All sports',
-      'Verified press badge',
-    ],
-    cta: 'Apply now',
-    ctaLink: '/signup?account=media',
   },
 ];
 

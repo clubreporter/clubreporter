@@ -8,7 +8,7 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
 import { AuthShell, fieldClass, labelClass } from '@/components/AuthShell';
 
-export default function ResetPassword() {
+export default function ResetPassword({ preview = false }) {
   const navigate = useNavigate();
   const { checkUserAuth } = useAuth();
 
@@ -20,6 +20,12 @@ export default function ResetPassword() {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    if (preview) {
+      setRecoveryReady(true);
+      setChecking(false);
+      return undefined;
+    }
+
     let cancelled = false;
 
     const markReady = () => {
@@ -60,7 +66,7 @@ export default function ResetPassword() {
       clearTimeout(timeout);
       subscription.unsubscribe();
     };
-  }, []);
+  }, [preview]);
 
   const submit = async (e) => {
     e.preventDefault();

@@ -1,5 +1,6 @@
 import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
+import { isAdmin } from '@/lib/admin';
 
 export default function PageNotFound() {
   const location = useLocation();
@@ -22,7 +23,7 @@ export default function PageNotFound() {
             </p>
           </div>
 
-          {isAuthenticated && user?.role === 'admin' && (
+          {isAuthenticated && isAdmin(user) && (
             <div className="mt-8 p-4 bg-slate-100 rounded-lg border border-slate-200 text-left">
               <p className="text-sm font-medium text-slate-700">Admin</p>
               <p className="text-sm text-slate-600">This route may not be implemented yet.</p>

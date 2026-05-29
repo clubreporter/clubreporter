@@ -4,7 +4,7 @@ import { getSubscriptionStatus, getBillingPortalUrl } from '@/api/billing';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-const PLAN_NAMES = { club: 'Club', county: 'County', presspass: 'Press Pass', basic: 'Club', premium: 'County', media: 'Press Pass' };
+const PLAN_NAMES = { free: 'Free', club: 'Club', county: 'County', presspass: 'Press Pass', basic: 'Club', premium: 'County', media: 'Press Pass' };
 const BILLING_NAMES = { month: 'Monthly', year: 'Annual' };
 
 function StatusBadge({ status }) {

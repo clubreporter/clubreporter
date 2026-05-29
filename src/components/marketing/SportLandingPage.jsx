@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import MarketingNav from './MarketingNav';
 import MarketingFooter from './MarketingFooter';
+import { PlanCta } from './PlanCard';
 import { PRICING_TIERS } from '@/lib/brandConfig';
 
 /**
@@ -140,13 +141,9 @@ export default function SportLandingPage({
                   )}
                   <p className="text-xs font-bold uppercase text-gray-400">{tier.name}</p>
                   <p className="text-2xl font-black text-gray-900">{tier.price}<span className="text-sm font-normal text-gray-400">{tier.period}</span></p>
-                  <Link
-                    to={tier.ctaLink}
-                    className="mt-4 block text-center font-bold py-2.5 rounded-xl text-sm text-white"
-                    style={{ backgroundColor: brand.color }}
-                  >
-                    {tier.cta}
-                  </Link>
+                  <div className="mt-4">
+                    <PlanCta plan={tier} accent={brand.color} />
+                  </div>
                 </div>
               ))}
             </div>

@@ -13,7 +13,9 @@ export const AuthProvider = ({ children }) => {
   const checkUserAuth = useCallback(async () => {
     setIsLoadingAuth(true);
     try {
-      const currentUser = await fetchCurrentUser();
+      const allowUnverified =
+        typeof window !== 'undefined' && window.location.pathname.startsWith('/onboarding');
+      const currentUser = await fetchCurrentUser({ allowUnverified });
       if (currentUser) {
         setUser(currentUser);
         setIsAuthenticated(true);

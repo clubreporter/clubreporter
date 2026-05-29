@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { entities } from '@/api/entities';
+import { getPublicMatchPublisher } from '@/api/clubVerification';
+import { publicReportPath } from '@/lib/routes';
 import ScoreDisplay from '../components/ScoreDisplay';
 import Timeline from '../components/Timeline';
+import ReportSourceBadge from '../components/ReportSourceBadge';
 import { STATUS_LABELS, SPORT_LABELS } from '../lib/sportConfig';
 import { Badge } from '@/components/ui/badge';
 import { MessageCircle, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function PublicMatch() {
-  const { publicId } = useParams();
+  const { slug, publicId: legacyPublicId } = useParams();
+  const publicId = slug || legacyPublicId;
   const [match, setMatch] = useState(null);
   const [incidents, setIncidents] = useState([]);
   const [upcomingFixtures, setUpcomingFixtures] = useState([]);
+  const [publisher, setPublisher] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const loadMatch = async () => {
@@ -22,6 +27,7 @@ export default function PublicMatch() {
       setMatch(m);
       const inc = await entities.MatchIncident.filter({ matchId: m.id }, 'created_date', 100);
       setIncidents(inc);
+      getPublicMatchPublisher(publicId).then(setPublisher).catch(() => setPublisher(null));
       // Load other upcoming fixtures from same publisher
       const allMatches = await entities.Match.filter({ created_by: m.created_by }, '-matchDate', 20);
       const others = allMatches.filter(x => x.id !== m.id && ['scheduled', 'live'].includes(x.status));
@@ -50,6 +56,12 @@ export default function PublicMatch() {
 
   return (
     <div className="min-h-screen bg-background max-w-lg mx-auto px-4 py-6 space-y-5">
+      {publisher && (
+        <div className="flex justify-center pt-1">
+          <ReportSourceBadge publisher={publisher} />
+        </div>
+      )}
+
       <div className="text-center space-y-1">
         <Badge variant={isLive ? 'default' : 'secondary'} className={`${isLive ? 'bg-red-500 text-white animate-pulse' : ''}`}>
           {STATUS_LABELS[match.status]}
@@ -110,12 +122,20 @@ export default function PublicMatch() {
         <Timeline incidents={incidents} />
       </div>
 
+      {match.reportPublished && match.reportDraft && (
+        <div className="bg-card border border-border rounded-xl p-4 space-y-3">
+          <ReportSourceBadge publisher={publisher} size="sm" />
+          <h3 className="font-bold text-sm">Match Report</h3>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground">{match.reportDraft}</p>
+        </div>
+      )}
+
       {upcomingFixtures.length > 0 && (
         <div className="bg-card border border-border rounded-xl p-4">
           <h3 className="font-bold mb-3 text-sm">Other Upcoming Fixtures</h3>
           <div className="space-y-2">
             {upcomingFixtures.map(f => (
-              <a key={f.id} href={`/m/${f.publicId}`}
+              <a key={f.id} href={publicReportPath(f.publicId)}
                 className="flex items-center justify-between p-3 rounded-xl bg-muted hover:bg-muted/80 transition-colors">
                 <div>
                   <p className="font-semibold text-sm">{f.homeTeamName} v {f.awayTeamName}</p>

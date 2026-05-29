@@ -1,8 +1,14 @@
-import { Link } from 'react-router-dom';
-import { Check } from 'lucide-react';
 import MarketingNav from '@/components/marketing/MarketingNav';
 import MarketingFooter from '@/components/marketing/MarketingFooter';
-import { PRICING_TIERS, SPORT_COMPARISON, BRAND } from '@/lib/brandConfig';
+import PlanCard from '@/components/marketing/PlanCard';
+import { SPORT_COMPARISON, BRAND } from '@/lib/brandConfig';
+import {
+  PRICING_TIERS,
+  PAID_TRIAL_NOTE,
+  FREE_PLAN_NOTE,
+  MEDIA_NO_TRIAL_NOTE,
+  CONTACT_EMAIL,
+} from '@/lib/planConfig';
 
 export default function Pricing() {
   return (
@@ -13,51 +19,29 @@ export default function Pricing() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-12">
             <h1 className="text-3xl sm:text-4xl font-black text-gray-900 mb-3">Simple, transparent pricing</h1>
-            <p className="text-gray-500 max-w-xl mx-auto">All plans support GAA, soccer and rugby. Start free — upgrade when you need more.</p>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              All plans support GAA, soccer and rugby. Start free — upgrade when you need more.
+            </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-16">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             {PRICING_TIERS.map((tier) => (
-              <div
-                key={tier.id}
-                className={`rounded-2xl p-6 bg-white border flex flex-col ${
-                  tier.highlight ? 'border-2 shadow-lg' : 'border-gray-100 shadow-sm'
-                }`}
-                style={tier.highlight ? { borderColor: BRAND.gaa.color } : undefined}
-              >
-                {tier.badge && (
-                  <span className="text-[10px] font-bold uppercase text-white px-3 py-1 rounded-full self-start mb-3" style={{ backgroundColor: BRAND.gaa.color }}>
-                    {tier.badge}
-                  </span>
-                )}
-                <p className="text-xs font-bold uppercase tracking-widest text-gray-400">{tier.name}</p>
-                <p className="text-3xl font-black text-gray-900 mt-1">
-                  {tier.price}
-                  <span className="text-sm font-normal text-gray-400">{tier.period}</span>
-                </p>
-                {tier.altPrice && <p className="text-xs text-gray-400 mb-4">or {tier.altPrice}</p>}
-                <ul className="space-y-2.5 mb-6 flex-1">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm">
-                      <Check className="w-4 h-4 shrink-0 mt-0.5" style={{ color: BRAND.gaa.color }} />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to={tier.ctaLink}
-                  className={`block w-full text-center font-bold py-3 rounded-xl text-sm transition-opacity hover:opacity-90 ${
-                    tier.highlight ? 'text-white' : 'border-2 border-gray-200 text-gray-900 hover:bg-gray-50'
-                  }`}
-                  style={tier.highlight ? { backgroundColor: BRAND.gaa.color } : undefined}
-                >
-                  {tier.cta}
-                </Link>
-              </div>
+              <PlanCard key={tier.id} plan={tier} accent={BRAND.gaa.color} showCta />
             ))}
           </div>
 
-          {/* Sport comparison table */}
+          <div className="text-center space-y-2 mb-16 text-sm text-gray-500">
+            <p>{PAID_TRIAL_NOTE}</p>
+            <p>{FREE_PLAN_NOTE}</p>
+            <p>
+              {MEDIA_NO_TRIAL_NOTE} Please contact us at{' '}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-green-700 font-semibold hover:underline">
+                {CONTACT_EMAIL}
+              </a>
+              .
+            </p>
+          </div>
+
           <div className="rounded-2xl border border-gray-200 overflow-hidden">
             <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
               <h2 className="text-lg font-black text-gray-900">Feature comparison by sport</h2>

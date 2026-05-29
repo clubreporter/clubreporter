@@ -2,10 +2,17 @@ import { usePlan } from '../lib/usePlan';
 import PastDueBanner from './PastDueBanner';
 import BottomNav from './BottomNav';
 import { SportBadge } from '@/lib/useSportBrand.jsx';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
+import { isAdmin } from '@/lib/admin';
+import { ROUTES } from '@/lib/routes';
+import { ShieldCheck } from 'lucide-react';
 
 export default function Layout() {
   const { isPastDue } = usePlan();
+  const { user } = useAuth();
+  const { pathname } = useLocation();
+  const showAdminLink = isAdmin(user);
 
   return (
     <div className="min-h-screen min-h-[100dvh] bg-background flex flex-col">
@@ -19,7 +26,22 @@ export default function Layout() {
               ClubReporter<span className="opacity-90">.ie</span>
             </span>
           </div>
-          <SportBadge />
+          <div className="flex items-center gap-2 shrink-0">
+            {showAdminLink && (
+              <Link
+                to={ROUTES.admin}
+                className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold ${
+                  pathname.startsWith(ROUTES.admin)
+                    ? 'bg-white/25 text-white'
+                    : 'bg-white/10 text-white/90 hover:bg-white/20'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                Admin
+              </Link>
+            )}
+            <SportBadge />
+          </div>
         </div>
       </header>
 

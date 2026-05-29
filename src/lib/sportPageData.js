@@ -107,8 +107,9 @@ export const PRESS_PAGE = {
       'Media outlet name required on signup',
       'Website or social media page required for verification',
       'Our team reviews applications within 24 hours',
-      'Full Press Pass access available immediately after approval',
+      'Our team reviews applications within 24 hours',
+      'Contact us to activate your Press Pass account',
     ],
-    note: 'Press Pass is €34.99/month or €299.99/year — everything in County plus media tools.',
+    note: 'Press Pass is €34.99/month or €299.99/year. No trial available for Media accounts — please contact info@clubreporter.ie.',
   },
 };

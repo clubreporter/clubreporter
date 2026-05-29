@@ -4,16 +4,18 @@ import { useParams, Link } from 'react-router-dom';
 import { entities } from '@/api/entities';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Undo2, Eye, FileText, Camera } from 'lucide-react';
+import { Undo2, Eye, FileText, Camera, ArrowLeft } from 'lucide-react';
 import PhotoModal from '../components/PhotoModal';
 import LiveScoreboard from '../components/LiveScoreboard';
 import IncidentModal from '../components/IncidentModal';
 import IncidentButtons from '../components/IncidentButtons';
 import Timeline from '../components/Timeline';
 import { STATUS_LABELS, isGAA, isRugby, formatGAAScore } from '../lib/sportConfig';
+import { ROUTES, publicReportPath } from '@/lib/routes';
 
 export default function LiveMatch() {
-  const { matchId } = useParams();
+  const { id, matchId: legacyMatchId } = useParams();
+  const matchId = id || legacyMatchId;
   const [match, setMatch] = useState(null);
   const [incidents, setIncidents] = useState([]);
   const [minute, setMinute] = useState('');
@@ -200,6 +202,12 @@ export default function LiveMatch() {
 
       {/* Top bar */}
       <div className="flex items-center justify-between gap-2">
+        <Link
+          to={ROUTES.match(matchId)}
+          className="inline-flex items-center gap-1 text-xs text-white/60 hover:text-white"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" /> Control panel
+        </Link>
         <div className="flex items-center gap-2">
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
             isLive ? 'bg-red-500/20 text-red-400 border border-red-500/30 animate-pulse' : 'bg-white/10 text-white/60 border border-white/10'
@@ -209,12 +217,12 @@ export default function LiveMatch() {
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Link to={`/match/${matchId}/report`}>
+          <Link to={ROUTES.matchReport(matchId)}>
             <Button variant="ghost" size="sm" className="h-8 text-white/70 hover:text-white hover:bg-white/10 text-xs">
               <FileText className="w-3.5 h-3.5 mr-1" />Report
             </Button>
           </Link>
-          <Link to={`/m/${match.publicId}`} target="_blank">
+          <Link to={publicReportPath(match.publicId)} target="_blank">
             <Button variant="ghost" size="sm" className="h-8 text-white/70 hover:text-white hover:bg-white/10 text-xs">
               <Eye className="w-3.5 h-3.5 mr-1" />Public
             </Button>

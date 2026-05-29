@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePlan } from '../lib/usePlan';
+import { useAuth } from '@/lib/AuthContext';
+import ReportSourceBadge from '@/components/ReportSourceBadge';
 import { LockedButton } from '../components/UpgradeModal';
 import { useParams, Link } from 'react-router-dom';
 import { entities } from '@/api/entities';
@@ -9,9 +11,11 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Download, Share2, Copy, Check, Sparkles } from 'lucide-react';
 import { isGAA, formatGAAScore, SPORT_LABELS, STATUS_LABELS, buildReportPrompt } from '../lib/sportConfig';
 import jsPDF from 'jspdf';
+import { ROUTES, publicReportUrl } from '@/lib/routes';
 
 export default function MatchReport() {
-  const { matchId } = useParams();
+  const { id, matchId: legacyMatchId } = useParams();
+  const matchId = id || legacyMatchId;
   const [match, setMatch] = useState(null);
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +23,12 @@ export default function MatchReport() {
   const [summarising, setSummarising] = useState(false);
   const reportRef = useRef(null);
   const { isPremium } = usePlan();
+  const { user } = useAuth();
+  const [club, setClub] = useState(null);
+
+  useEffect(() => {
+    entities.Club.list().then((clubs) => setClub(clubs[0] || null));
+  }, []);
 
   useEffect(() => {
     Promise.all([
@@ -31,9 +41,7 @@ export default function MatchReport() {
     });
   }, [matchId]);
 
-  const publicUrl = match?.publicId
-    ? `${window.location.origin}/m/${match.publicId}`
-    : null;
+  const publicUrl = match?.publicId ? publicReportUrl(match.publicId) : null;
 
   const shareText = match
     ? `${match.homeTeamName} vs ${match.awayTeamName} — Live match report`
@@ -175,12 +183,17 @@ export default function MatchReport() {
   const homeScore = gaa ? formatGAAScore(match.homeGoals, match.homePoints) : String(match.homeGoals || 0);
   const awayScore = gaa ? formatGAAScore(match.awayGoals, match.awayPoints) : String(match.awayGoals || 0);
   const mainEvents = incidents.filter(i => i.type !== 'admin_note');
+  const publisher = {
+    profileType: user?.profileType,
+    clubVerificationStatus: club?.verificationStatus,
+    mediaOutletName: user?.mediaOutletName,
+  };
 
   return (
     <div className="space-y-5 pb-8">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Link to={`/match/${matchId}/live`}>
+        <Link to={ROUTES.matchTimeline(matchId)}>
           <Button variant="ghost" size="icon"><ArrowLeft className="w-4 h-4" /></Button>
         </Link>
         <h1 className="font-bold text-lg">Match Report</h1>
@@ -188,6 +201,9 @@ export default function MatchReport() {
 
       {/* Report preview card */}
       <div ref={reportRef} className="bg-card border border-border rounded-2xl p-5 space-y-4">
+        <div className="flex justify-center">
+          <ReportSourceBadge publisher={publisher} size="sm" />
+        </div>
         {/* Meta */}
         <div className="text-center space-y-1">
           <p className="text-xs text-muted-foreground font-medium">

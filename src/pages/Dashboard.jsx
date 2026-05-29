@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 import { usePlan } from '../lib/usePlan';
 import { useAuth } from '@/lib/AuthContext';
 import { LockedButton } from '../components/UpgradeModal';
@@ -8,12 +9,17 @@ import ClubSwitcher, { getActiveClubId } from '../components/ClubSwitcher';
 import { entities } from '@/api/entities';
 import { Button } from '@/components/ui/button';
 import { Plus, Radio, Users, Calendar, Trophy, Building2 } from 'lucide-react';
+import { ROUTES } from '@/lib/routes';
 import MatchCard from '../components/MatchCard';
 import { applyClubColours } from '../lib/clubColours';
 import { SportBadge } from '@/lib/useSportBrand.jsx';
+import { ClubVerificationBanner } from '@/components/club/ClubVerificationForm';
+import { isAdmin } from '@/lib/admin';
+import { ShieldCheck } from 'lucide-react';
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const location = useLocation();
   const [matches, setMatches] = useState([]);
   const [club, setClub] = useState(null);
   const [playerCount, setPlayerCount] = useState(0);
@@ -48,6 +54,13 @@ export default function Dashboard() {
     fetchData();
   }, [fetchData]);
 
+  useEffect(() => {
+    if (location.state?.flashError) {
+      toast.error(location.state.flashError);
+      window.history.replaceState({}, document.title, location.pathname);
+    }
+  }, [location]);
+
   const refreshing = usePullToRefresh(fetchData);
 
   const live = matches.filter(m => ['live', 'half_time', 'extra_time', 'penalties'].includes(m.status));
@@ -76,6 +89,20 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <ClubVerificationBanner club={club} profileType={user?.profileType} />
+
+      {isAdmin(user) && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <ShieldCheck className="w-5 h-5 text-amber-800 shrink-0" />
+            <p className="text-sm font-semibold text-amber-950 truncate">Platform admin</p>
+          </div>
+          <Link to={ROUTES.admin}>
+            <Button size="sm" className="font-bold shrink-0">Open Admin Panel</Button>
+          </Link>
+        </div>
+      )}
+
       {/* Club header */}
       <div className="rounded-2xl border border-border bg-card overflow-hidden">
         <div className="px-4 py-4 flex items-center gap-4">
@@ -126,7 +153,7 @@ export default function Dashboard() {
       )}
 
       {hasAny ? (
-        <Link to="/create-match">
+        <Link to={ROUTES.matchNew}>
           <Button
             className="w-full py-6 text-base font-bold rounded-xl shadow-md text-white border-0"
             style={{

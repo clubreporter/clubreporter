@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
 import { usePlan } from '../lib/usePlan';
 import { LockedBlock } from '../components/UpgradeModal';
 import { entities } from '@/api/entities';
@@ -17,6 +19,7 @@ import { toast } from 'sonner';
 import { COLOUR_OPTIONS, applyClubColours, getColourMeta } from '../lib/clubColours';
 import { defaultGrades, getActiveTeams, saveActiveTeamsToStorage } from '../lib/clubGrades';
 import GradesTab from '../components/GradesTab';
+import { VerificationStatusPill } from '@/components/ReportSourceBadge';
 
 function ColourSwatch({ colour }) {
   const meta = getColourMeta(colour);
@@ -255,7 +258,19 @@ export default function Club() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold">{pageTitle}</h2>
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold">{pageTitle}</h2>
+        {user?.profileType === 'club' && club && (
+          <div className="flex flex-wrap items-center gap-2">
+            <VerificationStatusPill status={club.verificationStatus || 'unverified'} />
+            {club.verificationStatus !== 'approved' && (
+              <Link to="/club/verify" className="text-sm font-semibold text-primary hover:underline">
+                Verify club →
+              </Link>
+            )}
+          </div>
+        )}
+      </div>
 
       <Tabs defaultValue="info">
         <TabsList className="w-full">

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { entities } from '@/api/entities';
+import { ROUTES } from '@/lib/routes';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -233,7 +234,7 @@ export default function CreateMatch() {
             : buildDefaultOpponentLineup(form.sport, useSquadNumbers),
         awaySubs: [],
       });
-      navigate(`/match/${match.id}/live`);
+      navigate(ROUTES.matchTimeline(match.id));
     } catch (err) {
       setValidationMessage(err.message || 'Could not create match. Please try again.');
     } finally {

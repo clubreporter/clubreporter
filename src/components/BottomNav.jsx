@@ -1,31 +1,50 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Calendar, PlusCircle, Users, Shield, CreditCard } from 'lucide-react';
+import { Home, Calendar, PlusCircle, Users, Shield, CreditCard, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { ROUTES } from '@/lib/routes';
+import { useAuth } from '@/lib/AuthContext';
+import { isAdmin } from '@/lib/admin';
 
-const TABS = [
-  { to: '/dashboard', icon: Home, label: 'Clubhouse', match: (path) => path === '/dashboard' },
+const BASE_TABS = [
+  { to: ROUTES.dashboard, icon: Home, label: 'Clubhouse', match: (path) => path === ROUTES.dashboard },
   { to: '/fixtures', icon: Calendar, label: 'Fixtures', match: (path) => path === '/fixtures' },
   {
-    to: '/create-match',
+    to: ROUTES.matches,
     icon: PlusCircle,
     label: 'Matchday',
-    match: (path) => path === '/create-match' || path.startsWith('/match/'),
+    match: (path) =>
+      path === ROUTES.matches ||
+      path === ROUTES.matchNew ||
+      path.startsWith('/matches/'),
   },
   { to: '/teams', icon: Users, label: 'Squad', match: (path) => path === '/teams' },
   { to: '/club', icon: Shield, label: 'My Club', match: (path) => path === '/club' },
   { to: '/billing', icon: CreditCard, label: 'Membership', match: (path) => path === '/billing' },
 ];
 
+const ADMIN_TAB = {
+  to: ROUTES.admin,
+  icon: ShieldCheck,
+  label: 'Admin',
+  match: (path) => path === ROUTES.admin || path.startsWith(`${ROUTES.admin}/`),
+};
+
 export default function BottomNav() {
   const { pathname } = useLocation();
+  const { user } = useAuth();
+  const tabs = isAdmin(user) ? [...BASE_TABS, ADMIN_TAB] : BASE_TABS;
+  const cols = tabs.length;
 
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/90 safe-bottom"
       aria-label="Main navigation"
     >
-      <div className="max-w-lg mx-auto grid grid-cols-6 px-0.5 pt-1.5 pb-2">
-        {TABS.map(({ to, icon: Icon, label, match }) => {
+      <div
+        className="max-w-lg mx-auto grid px-0.5 pt-1.5 pb-2"
+        style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+      >
+        {tabs.map(({ to, icon: Icon, label, match }) => {
           const active = match(pathname);
           return (
             <NavLink

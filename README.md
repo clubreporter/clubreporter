@@ -30,7 +30,18 @@ Run the app: `npm run dev`
 
 **Publish your changes**
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+Open [Base44.com](http://Base44.com) and click on **Publish**.
+
+After publishing, deep links like `/admin` and `/dashboard` work because the build generates
+`admin/index.html`, `404.html`, and other SPA fallback files automatically.
+
+**Admin access**
+
+1. Sign up / log in with your account (e.g. `briandavidcarey@gmail.com`)
+2. Run `supabase/seed-admin-brian.sql` in Supabase SQL Editor
+3. Sign out and back in, then open `/admin` or use the **Admin** link in the app header
+
+If `/admin` still shows a host 404, republish from Base44 so the latest build (with SPA fallbacks) is live.
 
 **Docs & Support**
 

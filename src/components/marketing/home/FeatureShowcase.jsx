@@ -38,7 +38,7 @@ export default function FeatureShowcase() {
             </ul>
 
             <Link
-              to="/signup"
+              to="/onboarding"
               className="inline-flex font-bold text-[#0f172a] bg-emerald-400 hover:bg-emerald-300 px-8 py-4 rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               Start Reporting Smarter

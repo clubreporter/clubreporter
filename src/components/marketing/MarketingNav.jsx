@@ -4,9 +4,8 @@ import { Menu, X } from 'lucide-react';
 import { scrollTo } from '@/lib/homeLandingData';
 
 const HOME_LINKS = [
-  { label: 'Sports', action: () => scrollTo('sports') },
-  { label: 'Benefits', action: () => scrollTo('benefits') },
-  { label: 'How It Works', action: () => scrollTo('how-it-works') },
+  { label: 'Features', action: () => scrollTo('features') },
+  { label: 'Sample', action: () => scrollTo('sample-report') },
   { label: 'Pricing', action: () => scrollTo('pricing') },
 ];
 
@@ -22,11 +21,10 @@ export default function MarketingNav() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === '/';
-
   const links = isHome ? HOME_LINKS : PAGE_LINKS;
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100">
+    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100" aria-label="Main navigation">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm bg-[#1a9e6d]">
@@ -67,16 +65,17 @@ export default function MarketingNav() {
             Sign In
           </Link>
           <Link
-            to="/signup"
+            to="/onboarding"
             className="text-sm font-bold text-white px-4 py-2.5 rounded-xl bg-[#1a9e6d] hover:bg-[#15803d] transition-colors"
           >
-            Start 14-Day Trial
+            Start your first match report
           </Link>
           <button
             type="button"
             className="md:hidden p-2 text-gray-700"
             onClick={() => setOpen(!open)}
-            aria-label="Menu"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            aria-expanded={open}
           >
             {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
