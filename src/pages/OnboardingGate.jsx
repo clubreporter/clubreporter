@@ -10,28 +10,14 @@ const AuthSpinner = () => (
   </div>
 );
 
-function isOnboardingPath(pathname) {
-  return pathname === ROUTES.onboarding || pathname.startsWith(`${ROUTES.onboarding}/`);
-}
-
-/** Six-screen onboarding — local state until welcome step writes to Supabase */
+/** Pre-signup onboarding funnel — authenticated users go straight to dashboard */
 export default function OnboardingGate() {
-  const { isLoadingAuth, isAuthenticated, user } = useAuth();
+  const { isLoadingAuth, isAuthenticated } = useAuth();
   const location = useLocation();
 
   if (isLoadingAuth) return <AuthSpinner />;
 
-  const profileComplete =
-    user?.profileType &&
-    (user.profileType === 'media' || user.primarySport);
-
-  if (
-    isAuthenticated &&
-    profileComplete &&
-    user?.emailVerified !== false &&
-    isOnboardingPath(location.pathname) &&
-    !location.pathname.endsWith('/welcome')
-  ) {
+  if (isAuthenticated) {
     return <Navigate to={ROUTES.dashboard} replace />;
   }
 

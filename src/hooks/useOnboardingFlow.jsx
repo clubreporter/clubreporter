@@ -4,7 +4,12 @@ import {
   ONBOARDING_ROUTES,
   clubCodeForSport,
 } from '@/lib/onboardingConstants';
-import { loadOnboardingState, saveOnboardingState } from '@/lib/onboardingStorage';
+import {
+  loadOnboardingState,
+  saveOnboardingState,
+  patchOnboardingState,
+  hasStoredOnboarding,
+} from '@/lib/onboardingStorage';
 
 const OnboardingFlowContext = createContext(null);
 
@@ -35,65 +40,74 @@ export function OnboardingFlowProvider({ children }) {
       if (plan && ['free', 'club', 'county', 'presspass'].includes(plan)) {
         next.planId = plan;
       }
+      saveOnboardingState(next);
       return next;
     });
   }, [searchParams]);
 
-  useEffect(() => {
-    saveOnboardingState(state);
-  }, [state]);
-
-  const patch = useCallback((updates) => {
-    setState((prev) => ({ ...prev, ...updates }));
+  const persist = useCallback((next) => {
+    saveOnboardingState(next);
+    setState(next);
+    return next;
   }, []);
 
+  const patch = useCallback((updates) => {
+    return persist(patchOnboardingState(updates));
+  }, [persist]);
+
   const setAccountType = useCallback((accountType) => {
-    setState((prev) => ({
-      ...prev,
+    const prev = loadOnboardingState();
+    const planId = accountType === 'media' ? 'presspass' : prev.planId === 'presspass' ? 'free' : prev.planId;
+    persist(patchOnboardingState({
       accountType,
       sport: accountType === 'media' ? '' : prev.sport,
       clubCode: accountType === 'media' ? '' : prev.clubCode,
-      planId: accountType === 'media' ? 'presspass' : prev.planId === 'presspass' ? 'free' : prev.planId,
+      planId,
+      plan: planId,
     }));
-  }, []);
+  }, [persist]);
 
   const setSport = useCallback((sport) => {
-    setState((prev) => ({
-      ...prev,
+    persist(patchOnboardingState({
       sport,
       clubCode: clubCodeForSport(sport),
     }));
-  }, []);
+  }, [persist]);
 
   const goTo = useCallback((path) => navigate(path), [navigate]);
 
   const nextFromAccountType = useCallback(() => {
+    saveOnboardingState(state);
     if (state.accountType === 'media') {
       goTo(ONBOARDING_ROUTES.plan);
     } else {
       goTo(ONBOARDING_ROUTES.sport);
     }
-  }, [state.accountType, goTo]);
+  }, [state, goTo]);
 
   const nextFromSport = useCallback(() => {
+    saveOnboardingState(state);
     goTo(ONBOARDING_ROUTES.clubDetails);
-  }, [goTo]);
+  }, [state, goTo]);
 
   const nextFromClubDetails = useCallback(() => {
+    saveOnboardingState(state);
     goTo(ONBOARDING_ROUTES.plan);
-  }, [goTo]);
+  }, [state, goTo]);
 
   const nextFromPlan = useCallback((emailVerified) => {
+    saveOnboardingState(state);
     if (emailVerified) {
       goTo(ONBOARDING_ROUTES.welcome);
     } else {
       goTo(ONBOARDING_ROUTES.confirmEmail);
     }
-  }, [goTo]);
+  }, [state, goTo]);
 
   const nextFromConfirmEmail = useCallback(() => {
+    saveOnboardingState(state);
     goTo(ONBOARDING_ROUTES.welcome);
-  }, [goTo]);
+  }, [state, goTo]);
 
   const backFrom = useCallback((currentPath) => {
     switch (currentPath) {

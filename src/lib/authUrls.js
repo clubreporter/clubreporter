@@ -21,8 +21,10 @@ export function buildAuthCallbackUrl(params = {}) {
   return url.toString();
 }
 
-export const SIGNUP_CONFIRMATION_MESSAGE =
-  'Check your email to confirm your ClubReporter account.';
+export const SIGNUP_SUCCESS_MESSAGE =
+  'Account created! Check your email to confirm your account.';
+
+export const SIGNUP_CONFIRMATION_MESSAGE = SIGNUP_SUCCESS_MESSAGE;
 
 export const RESEND_SUCCESS_MESSAGE =
   'Confirmation email sent. Please check your inbox and spam folder.';

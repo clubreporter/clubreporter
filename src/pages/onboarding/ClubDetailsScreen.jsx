@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import OnboardingLayout from '@/components/onboarding/OnboardingLayout';
 import { useOnboardingFlow } from '@/hooks/useOnboardingFlow';
 import { IRISH_COUNTIES, ONBOARDING_ROUTES, clubCodeForSport } from '@/lib/onboardingConstants';
+import { patchOnboardingState } from '@/lib/onboardingStorage';
 
 export default function ClubDetailsScreen() {
   const { state, patch, nextFromClubDetails, backFrom } = useOnboardingFlow();
@@ -29,7 +30,11 @@ export default function ClubDetailsScreen() {
           className="w-full h-12 font-bold bg-[#1A9E6D] hover:bg-[#158f63] text-white"
           disabled={!canContinue}
           onClick={() => {
-            patch({ clubCode });
+            patchOnboardingState({
+              clubName: state.clubName,
+              county: state.county,
+              clubCode,
+            });
             nextFromClubDetails();
           }}
         >

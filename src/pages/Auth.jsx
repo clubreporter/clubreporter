@@ -8,10 +8,19 @@ import {
   isSignupConfirmationPending,
   isDuplicateSignup,
 } from '@/api/auth';
-import { SIGNUP_CONFIRMATION_MESSAGE, RESEND_SUCCESS_MESSAGE } from '@/lib/authUrls';
+import {
+  SIGNUP_SUCCESS_MESSAGE,
+  RESEND_SUCCESS_MESSAGE,
+} from '@/lib/authUrls';
 import { buildOnboardingUrl, formatSignupSummary } from '@/lib/signupFlow';
-import { patchOnboardingState } from '@/lib/onboardingStorage';
+import {
+  loadOnboardingState,
+  patchOnboardingState,
+  hasStoredOnboarding,
+} from '@/lib/onboardingStorage';
+import { finishOnboardingFromStorage } from '@/lib/finishOnboardingFromStorage';
 import { ONBOARDING_ROUTES } from '@/lib/onboardingConstants';
+import { ROUTES } from '@/lib/routes';
 import { isTestPreviewPath } from '@/lib/testAdmin';
 import { getPlanById } from '@/lib/planConfig';
 import { useAuth } from '@/lib/AuthContext';
@@ -64,34 +73,29 @@ export default function Auth() {
       ? redirectParam
       : '/dashboard';
 
+  const storedOnboarding = loadOnboardingState();
+
   const signupOptions = () => ({
-    sport: sportParam || undefined,
-    account: accountParam || undefined,
-    plan: planParam || undefined,
-    redirect: redirect !== '/dashboard' ? redirect : undefined,
+    sport: storedOnboarding.sport || sportParam || undefined,
+    account: storedOnboarding.accountType || accountParam || undefined,
+    plan: storedOnboarding.planId || storedOnboarding.plan || planParam || undefined,
+    redirect: '/auth/callback',
   });
 
-  const onboardingUrl = () =>
-    buildOnboardingUrl({
-      sport: sportParam || undefined,
-      account: accountParam || undefined,
-      plan: planParam || undefined,
-    });
-
-  const signupQuerySuffix = () => {
-    const params = new URLSearchParams();
-    if (accountParam) params.set('account', accountParam);
-    if (sportParam) params.set('sport', sportParam);
-    if (planParam) params.set('plan', planParam);
-    if (redirect !== '/dashboard') params.set('redirect', redirect);
-    const qs = params.toString();
-    return qs ? `?${qs}` : '';
+  const onboardingSelections = {
+    sport: storedOnboarding.sport || sportParam,
+    account: storedOnboarding.accountType || accountParam,
+    plan: storedOnboarding.planId || storedOnboarding.plan || planParam,
   };
 
-  const signupSummary = isSignUp && (sportParam || accountParam || planParam)
-    ? formatSignupSummary({ sport: sportParam, account: accountParam, plan: planParam })
-    : '';
-  const selectedPlan = planParam ? getPlanById(planParam) : null;
+  const signupSummary = isSignUp && hasStoredOnboarding(storedOnboarding)
+    ? formatSignupSummary(onboardingSelections)
+    : isSignUp && (sportParam || accountParam || planParam)
+      ? formatSignupSummary({ sport: sportParam, account: accountParam, plan: planParam })
+      : '';
+  const selectedPlan = (storedOnboarding.planId || storedOnboarding.plan || planParam)
+    ? getPlanById(storedOnboarding.planId || storedOnboarding.plan || planParam)
+    : null;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -127,9 +131,19 @@ export default function Auth() {
   }, [isAuthenticated, isLoadingAuth, navigate, redirect, pendingConfirmation, isPreview]);
 
   const afterAuth = async () => {
+    await checkUserAuth();
+
+    if (hasStoredOnboarding()) {
+      const result = await finishOnboardingFromStorage();
+      await checkUserAuth();
+      if (result.redirecting) return;
+      navigate(ROUTES.dashboard, { replace: true });
+      return;
+    }
+
     const user = await checkUserAuth();
     if (user && (!user.profileType || (user.profileType !== 'media' && !user.primarySport))) {
-      navigate(onboardingUrl(), { replace: true });
+      navigate(buildOnboardingUrl(onboardingSelections), { replace: true });
     } else {
       navigate(redirect, { replace: true });
     }
@@ -182,7 +196,9 @@ export default function Auth() {
 
         if (isSignupConfirmationPending(data)) {
           patchOnboardingState({ signupEmail: email.trim() });
-          navigate(ONBOARDING_ROUTES.confirmEmail, { replace: true });
+          setPendingEmail(email.trim());
+          setPendingConfirmation(true);
+          setMessage(SIGNUP_SUCCESS_MESSAGE);
           return;
         }
 
@@ -194,8 +210,10 @@ export default function Auth() {
       await afterAuth();
     } catch (err) {
       if (err.code === 'email_not_confirmed') {
-        patchOnboardingState({ signupEmail: email.trim() });
-        navigate(ONBOARDING_ROUTES.confirmEmail, { replace: true });
+        setPendingEmail(email.trim());
+        setPendingConfirmation(true);
+        setMessage(SIGNUP_SUCCESS_MESSAGE);
+        setError('Please confirm your email before signing in.');
       } else {
         setError(err.message || 'Something went wrong. Please try again.');
       }
@@ -225,8 +243,8 @@ export default function Auth() {
             <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4 text-2xl">
               ✉️
             </div>
-            <h1 className="text-xl font-black text-gray-900 mb-2">Confirm your email</h1>
-            <p className="text-sm text-gray-600 leading-relaxed mb-2">{SIGNUP_CONFIRMATION_MESSAGE}</p>
+            <h1 className="text-xl font-black text-gray-900 mb-2">Account created!</h1>
+            <p className="text-sm text-gray-600 leading-relaxed mb-2">{SIGNUP_SUCCESS_MESSAGE}</p>
             <p className="text-sm font-semibold text-gray-900 mb-6">{pendingEmail}</p>
             {message && (
               <p className="text-sm text-green-700 bg-green-50 rounded-lg px-3 py-2.5 mb-4" role="status">
@@ -248,7 +266,7 @@ export default function Auth() {
               {resendLoading ? 'Sending…' : 'Resend confirmation email'}
             </Button>
             <Link
-              to={`/login${signupQuerySuffix()}`}
+              to="/login"
               className="text-sm font-semibold text-green-700 hover:underline"
             >
               Back to sign in
@@ -289,7 +307,7 @@ export default function Auth() {
               {selectedPlan?.hasTrial && (
                 <p className="text-xs mt-1 text-emerald-800">You will complete billing after email confirmation.</p>
               )}
-              <Link to={`/onboarding${signupQuerySuffix()}`} className="text-xs font-semibold text-emerald-700 hover:underline mt-2 inline-block">
+              <Link to={ONBOARDING_ROUTES.accountType} className="text-xs font-semibold text-emerald-700 hover:underline mt-2 inline-block">
                 Change sport, account or plan
               </Link>
             </div>

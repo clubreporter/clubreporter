@@ -1,29 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/lib/AuthContext';
 import { AuthShell } from '@/components/AuthShell';
 import { Button } from '@/components/ui/button';
-
-import { ONBOARDING_ROUTES } from '@/lib/onboardingConstants';
-import { loadOnboardingState } from '@/lib/onboardingStorage';
-
-function onboardingPathAfterAuth(searchParams) {
-  const stored = loadOnboardingState();
-  if (stored.planId) {
-    return ONBOARDING_ROUTES.welcome;
-  }
-  const qsSport = searchParams.get('sport');
-  const qsAccount = searchParams.get('account');
-  if (qsSport || qsAccount) {
-    return ONBOARDING_ROUTES.accountType;
-  }
-  return ONBOARDING_ROUTES.accountType;
-}
+import { finishOnboardingFromStorage } from '@/lib/finishOnboardingFromStorage';
+import { ROUTES } from '@/lib/routes';
 
 export default function AuthCallback() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { checkUserAuth } = useAuth();
   const [status, setStatus] = useState('loading');
   const [error, setError] = useState('');
@@ -32,23 +17,22 @@ export default function AuthCallback() {
     const user = await checkUserAuth();
     if (!user) return false;
 
-    setStatus('success');
-    const redirect = searchParams.get('redirect');
-    const needsOnboarding =
-      !user.profileType || (user.profileType !== 'media' && !user.primarySport);
+    try {
+      const result = await finishOnboardingFromStorage();
+      await checkUserAuth();
 
-    window.setTimeout(() => {
-      if (needsOnboarding) {
-        navigate(onboardingPathAfterAuth(searchParams), { replace: true });
-      } else if (redirect && redirect.startsWith('/')) {
-        navigate(redirect, { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
-    }, 1000);
-
-    return true;
-  }, [checkUserAuth, navigate, searchParams]);
+      setStatus('success');
+      window.setTimeout(() => {
+        if (result.redirecting) return;
+        navigate(ROUTES.dashboard, { replace: true });
+      }, 1000);
+      return true;
+    } catch (err) {
+      setError(err.message || 'Could not finish setting up your account.');
+      setStatus('error');
+      return false;
+    }
+  }, [checkUserAuth, navigate]);
 
   useEffect(() => {
     let cancelled = false;
@@ -96,7 +80,7 @@ export default function AuthCallback() {
 
   if (status === 'loading') {
     return (
-      <AuthShell title="Confirming your email…" subtitle="Please wait while we verify your ClubReporter account.">
+      <AuthShell title="Confirming your email…" subtitle="Please wait while we set up your ClubReporter account.">
         <div className="flex justify-center py-8">
           <div className="w-8 h-8 border-4 border-slate-200 border-t-green-600 rounded-full animate-spin" />
         </div>
@@ -106,7 +90,7 @@ export default function AuthCallback() {
 
   if (status === 'success') {
     return (
-      <AuthShell title="Email confirmed" subtitle="Your ClubReporter account is ready. Taking you to the app…">
+      <AuthShell title="Email confirmed" subtitle="Your account is ready. Taking you to the dashboard…">
         <div className="flex justify-center py-6">
           <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xl font-bold">
             ✓

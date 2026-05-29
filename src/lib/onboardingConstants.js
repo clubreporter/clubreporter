@@ -1,4 +1,4 @@
-export const ONBOARDING_STORAGE_KEY = 'clubreporter_onboarding_v2';
+export const ONBOARDING_STORAGE_KEY = 'onboarding';
 
 export const ONBOARDING_ROUTES = {
   accountType: '/onboarding/account-type',

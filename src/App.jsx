@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import { bypassesOnboarding } from '@/lib/testAdmin';
+import { hasStoredOnboarding } from '@/lib/onboardingStorage';
 import TestPageNav from '@/components/admin/TestPageNav';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
@@ -95,11 +96,8 @@ const ProtectedLayout = () => {
   if (!bypassesOnboarding(user)) {
     const onAdminPath =
       location.pathname === ROUTES.admin || location.pathname.startsWith('/test-pages');
-    const onOnboardingPath =
-      location.pathname === ROUTES.onboarding ||
-      location.pathname.startsWith(`${ROUTES.onboarding}/`);
 
-    if (user && !user.profileType && !onOnboardingPath && !onAdminPath) {
+    if (user && !user.profileType && !onAdminPath && !hasStoredOnboarding()) {
       return <Navigate to="/onboarding/account-type" replace />;
     }
 
@@ -107,8 +105,8 @@ const ProtectedLayout = () => {
       user &&
       user.profileType !== 'media' &&
       !user.primarySport &&
-      !onOnboardingPath &&
-      !onAdminPath
+      !onAdminPath &&
+      !hasStoredOnboarding()
     ) {
       return <Navigate to="/onboarding/account-type" replace />;
     }

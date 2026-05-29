@@ -7,6 +7,7 @@ import PressPassVerificationDialog from '@/components/onboarding/PressPassVerifi
 import { useOnboardingFlow } from '@/hooks/useOnboardingFlow';
 import { useAuth } from '@/lib/AuthContext';
 import { ONBOARDING_ROUTES } from '@/lib/onboardingConstants';
+import { patchOnboardingState } from '@/lib/onboardingStorage';
 import {
   ONBOARDING_PLAN_CARDS,
   annualSavingsPercent,
@@ -32,10 +33,10 @@ export default function PlanScreen() {
   );
 
   const proceedAfterPlan = (planId) => {
-    patch({ planId });
+    patchOnboardingState({ planId, plan: planId });
 
     if (!isAuthenticated) {
-      navigate(`/signup?redirect=${encodeURIComponent(ONBOARDING_ROUTES.confirmEmail)}`);
+      navigate('/signup');
       return;
     }
 
@@ -44,7 +45,7 @@ export default function PlanScreen() {
   };
 
   const handlePlanSelect = (plan) => {
-    patch({ planId: plan.id });
+    patchOnboardingState({ planId: plan.id, plan: plan.id });
 
     if (plan.ctaAction === 'apply') {
       setPendingPlan(plan.id);
