@@ -9,7 +9,7 @@ export default function MarketingFooter() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-10">
           <div className="lg:col-span-1">
             <div className="mb-3">
-              <ClubReporterLogo className="h-9 w-auto max-w-[180px]" />
+              <ClubReporterLogo className="h-10 w-auto max-w-[200px]" />
             </div>
             <p className="text-sm text-gray-500 leading-relaxed">{BRAND.master.tagline}</p>
           </div>

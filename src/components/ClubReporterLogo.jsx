@@ -9,6 +9,7 @@ export default function ClubReporterLogo({
   className = 'h-9 w-auto',
   linkTo = '/',
   asLink = true,
+  onDark = false,
 }) {
   const img = (
     <img
@@ -20,13 +21,21 @@ export default function ClubReporterLogo({
     />
   );
 
+  const content = onDark ? (
+    <span className="inline-flex items-center rounded-xl bg-white px-3 py-2 shadow-sm">
+      {img}
+    </span>
+  ) : (
+    img
+  );
+
   if (asLink && linkTo) {
     return (
       <Link to={linkTo} className="inline-flex shrink-0 items-center min-h-[44px]">
-        {img}
+        {content}
       </Link>
     );
   }
 
-  return img;
+  return content;
 }

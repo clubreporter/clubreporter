@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 import { SAMPLE_REPORT } from '@/lib/homeLandingData';
 
 export default function SampleReport() {
@@ -47,6 +47,9 @@ export default function SampleReport() {
             transition={{ delay: 0.1 }}
             className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-lg scroll-mt-24"
           >
+            <div className="mb-5 pb-4 border-b border-gray-100">
+              <ClubReporterLogo className="h-8 w-auto max-w-[170px]" asLink={false} />
+            </div>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">
                 Verified Club

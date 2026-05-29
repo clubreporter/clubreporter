@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import ProductMockup from './ProductMockup';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 import { HERO, scrollTo } from '@/lib/homeLandingData';
 
 export default function HeroSection() {
@@ -17,7 +18,11 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
           >
-            <h1 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-black leading-[1.12] tracking-tight mb-5 text-white">
+            <ClubReporterLogo
+              className="h-10 sm:h-11 w-auto max-w-[220px]"
+              onDark
+            />
+            <h1 className="text-3xl sm:text-4xl lg:text-[2.65rem] font-black leading-[1.12] tracking-tight mb-5 mt-6 text-white">
               {HERO.headline}
             </h1>
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed mb-8 max-w-xl">

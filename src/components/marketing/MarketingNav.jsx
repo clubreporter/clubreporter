@@ -27,7 +27,7 @@ export default function MarketingNav() {
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100" aria-label="Main navigation">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <ClubReporterLogo className="h-9 w-auto max-w-[180px]" />
+        <ClubReporterLogo className="h-10 w-auto max-w-[200px]" />
 
         <div className="hidden md:flex items-center gap-6">
           {links.map((link) =>

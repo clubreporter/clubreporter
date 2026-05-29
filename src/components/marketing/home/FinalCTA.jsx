@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 import { FINAL_CTA, scrollTo } from '@/lib/homeLandingData';
 
 export default function FinalCTA() {
@@ -12,6 +13,9 @@ export default function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
+          <div className="flex justify-center mb-6">
+            <ClubReporterLogo className="h-10 w-auto max-w-[200px]" onDark asLink={false} />
+          </div>
           <h2 className="text-3xl sm:text-4xl font-black mb-5 leading-tight">
             {FINAL_CTA.headline}
           </h2>

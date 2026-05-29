@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { FileText, Share2, ImageIcon } from 'lucide-react';
+import { LOGO_SRC } from '@/components/ClubReporterLogo';
 import { MOCKUP } from '@/lib/homeLandingData';
 
 const EVENT_COLOURS = {
@@ -16,6 +17,11 @@ export default function ProductMockup() {
   return (
     <div className="w-full max-w-md lg:max-w-none mx-auto lg:mx-0">
       <div className="rounded-2xl border border-white/10 bg-gradient-to-b from-slate-800 to-slate-900 shadow-2xl shadow-black/50 overflow-hidden">
+        <div className="px-4 py-2.5 border-b border-white/5 bg-slate-900/90 flex items-center">
+          <span className="inline-flex rounded-lg bg-white px-2.5 py-1">
+            <img src={LOGO_SRC} alt="ClubReporter.ie" className="h-5 w-auto max-w-[120px] object-contain" />
+          </span>
+        </div>
         {/* Match header */}
         <div className="px-4 sm:px-5 pt-4 pb-3 border-b border-white/5 bg-slate-900/80">
           <div className="flex items-center justify-between mb-1">
