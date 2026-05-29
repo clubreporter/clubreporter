@@ -16,6 +16,7 @@ import { isTestPreviewPath } from '@/lib/testAdmin';
 import { getPlanById } from '@/lib/planConfig';
 import { useAuth } from '@/lib/AuthContext';
 import { Button } from '@/components/ui/button';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 import { Input } from '@/components/ui/input';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Label } from '@/components/ui/label';
@@ -217,11 +218,7 @@ export default function Auth() {
     return (
       <div className="min-h-screen min-h-[100dvh] bg-gradient-to-b from-[#e8f2f0] to-white flex flex-col">
         <nav className="px-4 py-3 sm:py-4 border-b border-gray-100 bg-white/95 safe-top">
-          <Link to="/" className="flex items-center gap-2 w-fit min-h-[44px]">
-            <span className="font-black text-gray-900 text-lg">
-              ClubReporter<span className="text-[#1A9E6D]">.ie</span>
-            </span>
-          </Link>
+          <ClubReporterLogo className="h-9 w-auto max-w-[180px]" />
         </nav>
         <div className="flex-1 flex items-center justify-center px-4 py-8">
           <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-lg p-6 sm:p-8 text-center">
@@ -265,11 +262,7 @@ export default function Auth() {
   return (
     <div className="min-h-screen min-h-[100dvh] bg-gradient-to-b from-[#e8f2f0] to-white flex flex-col">
       <nav className="px-4 py-3 sm:py-4 border-b border-gray-100 bg-white/95 safe-top">
-        <Link to="/" className="flex items-center gap-2 w-fit min-h-[44px]">
-          <span className="font-black text-gray-900 text-lg">
-            ClubReporter<span className="text-[#1A9E6D]">.ie</span>
-          </span>
-        </Link>
+        <ClubReporterLogo className="h-9 w-auto max-w-[180px]" />
       </nav>
 
       <div className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 
 const fieldClass =
   'mt-1.5 h-11 text-base text-gray-900 bg-white placeholder:text-gray-400 border-gray-200 focus-visible:ring-green-600';
@@ -9,11 +9,7 @@ export function AuthShell({ title, subtitle, children, footer }) {
   return (
     <div className="min-h-screen min-h-[100dvh] bg-gradient-to-b from-[#e8f2f0] to-white flex flex-col">
       <nav className="px-4 py-3 sm:py-4 border-b border-gray-100 bg-white/95 safe-top">
-        <Link to="/" className="flex items-center gap-2 w-fit min-h-[44px]">
-          <span className="font-black text-gray-900 text-lg">
-            ClubReporter<span className="text-[#1A9E6D]">.ie</span>
-          </span>
-        </Link>
+        <ClubReporterLogo className="h-9 w-auto max-w-[180px]" />
       </nav>
 
       <div className="flex-1 flex items-center justify-center px-4 py-8 sm:py-12">

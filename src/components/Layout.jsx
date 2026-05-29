@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { isAdmin } from '@/lib/admin';
 import { ROUTES } from '@/lib/routes';
 import { ShieldCheck } from 'lucide-react';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 
 export default function Layout() {
   const { isPastDue } = usePlan();
@@ -18,14 +19,7 @@ export default function Layout() {
     <div className="min-h-screen min-h-[100dvh] bg-background flex flex-col">
       <header className="sticky top-0 z-40 bg-primary text-primary-foreground px-4 py-3 shadow-sm safe-top">
         <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="h-9 w-9 rounded-lg bg-white/15 flex items-center justify-center shrink-0 font-black text-sm">
-              CR
-            </div>
-            <span className="font-black text-lg tracking-tight truncate">
-              ClubReporter<span className="opacity-90">.ie</span>
-            </span>
-          </div>
+          <ClubReporterLogo className="h-8 w-auto max-w-[160px]" linkTo={ROUTES.dashboard} />
           <div className="flex items-center gap-2 shrink-0">
             {showAdminLink && (
               <Link

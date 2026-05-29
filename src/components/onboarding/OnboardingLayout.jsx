@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 import { TOTAL_ONBOARDING_STEPS } from '@/lib/onboardingConstants';
 
 export default function OnboardingLayout({
@@ -27,9 +27,7 @@ export default function OnboardingLayout({
           ) : (
             <span className="w-16" />
           )}
-          <Link to="/" className="font-black text-gray-900 text-lg">
-            ClubReporter<span className="text-[#1A9E6D]">.ie</span>
-          </Link>
+          <ClubReporterLogo className="h-8 w-auto max-w-[160px]" asLink={false} />
           <span className="w-16" />
         </div>
         <div className="space-y-1">

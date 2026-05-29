@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { BRAND } from '@/lib/brandConfig';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 
 export default function MarketingFooter() {
   return (
@@ -7,12 +8,9 @@ export default function MarketingFooter() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-10">
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-xs" style={{ backgroundColor: BRAND.gaa.color }}>
-                CR
-              </div>
-              <span className="font-black text-gray-900">ClubReporter.ie</span>
-            </Link>
+            <div className="mb-3">
+              <ClubReporterLogo className="h-9 w-auto max-w-[180px]" />
+            </div>
             <p className="text-sm text-gray-500 leading-relaxed">{BRAND.master.tagline}</p>
           </div>
 

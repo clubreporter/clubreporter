@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { scrollTo } from '@/lib/homeLandingData';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 
 const HOME_LINKS = [
   { label: 'Features', action: () => scrollTo('features') },
@@ -26,14 +27,7 @@ export default function MarketingNav() {
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100" aria-label="Main navigation">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm bg-[#1a9e6d]">
-            CR
-          </div>
-          <span className="font-black text-lg text-gray-900">
-            ClubReporter<span className="text-[#1a9e6d]">.ie</span>
-          </span>
-        </Link>
+        <ClubReporterLogo className="h-9 w-auto max-w-[180px]" />
 
         <div className="hidden md:flex items-center gap-6">
           {links.map((link) =>

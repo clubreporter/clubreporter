@@ -18,6 +18,7 @@ import {
   SIGNUP_FUNNEL_STEPS,
 } from '@/lib/signupFlow';
 import { Button } from '@/components/ui/button';
+import ClubReporterLogo from '@/components/ClubReporterLogo';
 import { BRAND } from '@/lib/brandConfig';
 
 const SPORT_ACCENTS = {
@@ -163,11 +164,7 @@ export default function GetStarted() {
   return (
     <div className="min-h-screen min-h-[100dvh] bg-gradient-to-b from-[#e8f2f0] to-white flex flex-col">
       <nav className="px-4 py-3 border-b border-gray-100 bg-white/95">
-        <Link to="/" className="flex items-center gap-2 w-fit min-h-[44px]">
-          <span className="font-black text-gray-900 text-lg">
-            ClubReporter<span className="text-[#1A9E6D]">.ie</span>
-          </span>
-        </Link>
+        <ClubReporterLogo className="h-9 w-auto max-w-[180px]" />
       </nav>
 
       <div className="flex-1 flex items-start justify-center px-4 py-8 sm:py-12">
